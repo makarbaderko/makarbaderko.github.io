@@ -1,0 +1,36 @@
+{
+  "name": "Makar Baderko",
+  "short_name": "Makar",
+  "description": "Software Engineer specializing in Data Science and Machine Learning",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f4f1eb",
+  "theme_color": "#f4f1eb",
+  "icons": [
+    {
+      "src": "/profile.jpg",
+      "sizes": "16x16",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "/profile.jpg",
+      "sizes": "32x32",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "/profile.jpg",
+      "sizes": "180x180",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "/profile.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "/profile.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+} 
