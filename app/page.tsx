@@ -70,7 +70,7 @@ export default function Home() {
           {/* Main Content */}
           <div className="prose prose-lg max-w-none">
             <p className="text-[#34495e]">
-              I'm a 16-year-old Software Engineer specializing in Data Science and Machine Learning.
+              I'm a 17-year-old Software Engineer specializing in Data Science and Machine Learning.
             </p>
             <p className="text-[#34495e]">
               I mostly write code in Python and C++, however I'm also familiar with languages like C and JavaScript. 
@@ -83,10 +83,10 @@ export default function Home() {
               learning Italian.
             </p>
             <p className="text-[#34495e]">
-              More detailed information about my skills and achievements can be found in my resume.
+              More detailed information about my skills and achievements can be found in my résumé.
             </p>
             <p className="text-sm text-[#5f6c7b] mt-8">
-              Last updated on April 15, 2025
+              Last updated on July 10, 2025
             </p>
           </div>
         </div>
