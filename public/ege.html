@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Калькулятор баллов ЕГЭ профильная математика</title>
+  <style>
+    :root {
+      --bg: #0f1220;
+      --card: #171b2e;
+      --card-2: #1d2340;
+      --text: #f3f5ff;
+      --muted: #b8c0e0;
+      --accent: #6ea8fe;
+      --border: #2d355f;
+      --shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top, rgba(110, 168, 254, 0.18), transparent 35%),
+        linear-gradient(180deg, #0b0e19 0%, var(--bg) 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .wrap {
+      width: min(1180px, calc(100% - 32px));
+      margin: 32px auto 48px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, rgba(110,168,254,0.18), rgba(142,240,199,0.12));
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+      backdrop-filter: blur(10px);
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(28px, 4vw, 42px);
+      line-height: 1.05;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.55;
+      max-width: 900px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.35fr 0.9fr;
+      gap: 24px;
+    }
+
+    .card {
+      background: rgba(23, 27, 46, 0.88);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+    }
+
+    .section-title {
+      margin: 0 0 14px;
+      font-size: 20px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    button {
+      appearance: none;
+      border: 0;
+      border-radius: 14px;
+      padding: 12px 16px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    button:hover { transform: translateY(-1px); }
+    button:active { transform: translateY(0); }
+
+    .primary-btn {
+      background: linear-gradient(135deg, var(--accent), #86b9ff);
+      color: #071228;
+      box-shadow: 0 10px 24px rgba(110,168,254,0.28);
+    }
+
+    .secondary-btn {
+      background: #242c50;
+      color: var(--text);
+      border: 1px solid #344074;
+    }
+
+    .tasks-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .task-card {
+      cursor: pointer;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px;
+      min-height: 92px;
+      display: grid;
+      gap: 10px;
+      user-select: none;
+      transition: border-color 0.15s ease, transform 0.15s ease, background 0.15s ease;
+    }
+
+    .task-card:hover {
+      border-color: #4d5ea0;
+      transform: translateY(-1px);
+    }
+
+    .task-card.active {
+      border-color: #6ea8fe;
+      background: linear-gradient(180deg, rgba(110,168,254,0.12), rgba(255,255,255,0.02));
+    }
+
+    .task-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .task-check {
+      width: 22px;
+      height: 22px;
+      accent-color: var(--accent);
+      flex: 0 0 auto;
+      cursor: pointer;
+      margin-top: 2px;
+    }
+
+    .task-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .task-title {
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    .task-meta {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .partial-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding-top: 10px;
+      margin-left: 34px;
+      user-select: auto;
+    }
+
+    .partial-row span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .partial-score {
+      background: #222a4b;
+      color: var(--text);
+      border: 1px solid #384372;
+      border-radius: 12px;
+      padding: 9px 12px;
+      font-size: 14px;
+      min-width: 110px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .result-box {
+      display: grid;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .result {
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .result-label {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .result-value {
+      font-size: clamp(28px, 5vw, 44px);
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+      margin-top: 12px;
+    }
+
+    .scale-table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+    }
+
+    .scale-table th,
+    .scale-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      text-align: left;
+      font-size: 14px;
+    }
+
+    .scale-table th {
+      color: var(--muted);
+      font-weight: 600;
+      background: rgba(255,255,255,0.03);
+    }
+
+    .legend {
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(142,240,199,0.2);
+      background: rgba(142,240,199,0.08);
+      color: #dfffee;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .footnote {
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 760px) {
+      .tasks-grid { grid-template-columns: 1fr; }
+      .wrap { width: min(100% - 20px, 1180px); margin-top: 20px; }
+      .hero, .card { padding: 18px; border-radius: 18px; }
+      .partial-row { margin-left: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <h1>Калькулятор баллов ЕГЭ по профильной математике</h1>
+      <p class="subtitle">
+        Отмечай решённые задания — страница автоматически считает <b>первичный</b> и <b>вторичный</b> балл.
+        Для задач второй части можно выбрать <b>частичный балл</b>, если задача решена не на максимум.
+      </p>
+    </section>
+
+    <div class="layout">
+      <section class="card">
+        <h2 class="section-title">Задания</h2>
+        <div class="controls">
+          <button class="primary-btn" id="fullFirstPartBtn" type="button">Первая часть на фулл</button>
+          <button class="secondary-btn" id="fullSecondPartBtn" type="button">Вторая часть на фулл</button>
+          <button class="secondary-btn" id="selectAllBtn" type="button">Выбрать всё</button>
+          <button class="secondary-btn" id="clearBtn" type="button">Сбросить</button>
+        </div>
+        <div class="tasks-grid" id="tasksGrid"></div>
+      </section>
+
+      <aside class="card">
+        <h2 class="section-title">Результат</h2>
+        <div class="result-box">
+          <div class="result">
+            <div class="result-label">Первичный балл</div>
+            <div class="result-value" id="primaryScore">0</div>
+          </div>
+          <div class="result">
+            <div class="result-label">Вторичный балл</div>
+            <div class="result-value" id="secondaryScore">0</div>
+          </div>
+        </div>
+
+        <div class="legend">
+          <b>Вес заданий:</b><br>
+          № 1–12 — по 1 баллу<br>
+          № 13, 15, 16 — до 2 баллов<br>
+          № 14, 17 — до 3 баллов<br>
+          № 18, 19 — до 4 баллов
+        </div>
+
+        <p class="hint" id="statusText">Пока ничего не выбрано.</p>
+
+        <table class="scale-table">
+          <thead>
+            <tr>
+              <th>Первичный</th>
+              <th>Вторичный</th>
+            </tr>
+          </thead>
+          <tbody id="scaleBody"></tbody>
+        </table>
+
+        <p class="footnote">
+          Для задач 13–19 можно выставить частичный балл. У задач 1–12 только состояние решено / не решено.
+        </p>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const tasks = [
+        { num: 1, title: 'Задание 1', maxPoints: 1, partial: false },
+        { num: 2, title: 'Задание 2', maxPoints: 1, partial: false },
+        { num: 3, title: 'Задание 3', maxPoints: 1, partial: false },
+        { num: 4, title: 'Задание 4', maxPoints: 1, partial: false },
+        { num: 5, title: 'Задание 5', maxPoints: 1, partial: false },
+        { num: 6, title: 'Задание 6', maxPoints: 1, partial: false },
+        { num: 7, title: 'Задание 7', maxPoints: 1, partial: false },
+        { num: 8, title: 'Задание 8', maxPoints: 1, partial: false },
+        { num: 9, title: 'Задание 9', maxPoints: 1, partial: false },
+        { num: 10, title: 'Задание 10', maxPoints: 1, partial: false },
+        { num: 11, title: 'Задание 11', maxPoints: 1, partial: false },
+        { num: 12, title: 'Задание 12', maxPoints: 1, partial: false },
+        { num: 13, title: 'Тригонометрия', maxPoints: 2, partial: true },
+        { num: 14, title: 'Стереометрия', maxPoints: 3, partial: true },
+        { num: 15, title: 'Неравенство', maxPoints: 2, partial: true },
+        { num: 16, title: 'Экономическая задача', maxPoints: 2, partial: true },
+        { num: 17, title: 'Планиметрия', maxPoints: 3, partial: true },
+        { num: 18, title: 'Задача с параметром', maxPoints: 4, partial: true },
+        { num: 19, title: 'Числа и свойства', maxPoints: 4, partial: true }
+      ];
+
+      const scale = {
+        0: 0,
+        1: 6,
+        2: 11,
+        3: 17,
+        4: 22,
+        5: 27,
+        6: 34,
+        7: 40,
+        8: 46,
+        9: 52,
+        10: 58,
+        11: 64,
+        12: 70,
+        13: 72,
+        14: 74,
+        15: 76,
+        16: 78,
+        17: 80,
+        18: 82,
+        19: 84,
+        20: 86,
+        21: 88,
+        22: 90,
+        23: 92,
+        24: 94,
+        25: 95,
+        26: 96,
+        27: 97,
+        28: 98,
+        29: 99,
+        30: 100,
+        31: 100,
+        32: 100
+      };
+
+      const state = {};
+      tasks.forEach(function (task) {
+        state[task.num] = task.partial ? 0 : false;
+      });
+
+      const tasksGrid = document.getElementById('tasksGrid');
+      const primaryScoreEl = document.getElementById('primaryScore');
+      const secondaryScoreEl = document.getElementById('secondaryScore');
+      const statusTextEl = document.getElementById('statusText');
+      const scaleBody = document.getElementById('scaleBody');
+      const fullFirstPartBtn = document.getElementById('fullFirstPartBtn');
+      const fullSecondPartBtn = document.getElementById('fullSecondPartBtn');
+      const selectAllBtn = document.getElementById('selectAllBtn');
+      const clearBtn = document.getElementById('clearBtn');
+
+      function pointsWord(value) {
+        if (value % 10 === 1 && value % 100 !== 11) return 'балл';
+        if ([2, 3, 4].includes(value % 10) && ![12, 13, 14].includes(value % 100)) return 'балла';
+        return 'баллов';
+      }
+
+      function escapeHtml(text) {
+        return String(text)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
+      function buildSelectOptions(maxPoints, selectedValue) {
+        let html = '';
+        for (let i = 0; i <= maxPoints; i += 1) {
+          const selected = i === selectedValue ? ' selected' : '';
+          html += '<option value="' + i + '"' + selected + '>' + i + ' ' + pointsWord(i) + '</option>';
+        }
+        return html;
+      }
+
+      function renderTasks() {
+        let html = '';
+
+        tasks.forEach(function (task) {
+          const currentValue = state[task.num];
+          const active = task.partial ? currentValue > 0 : currentValue === true;
+
+          html += '<div class="task-card' + (active ? ' active' : '') + '" data-task-num="' + task.num + '">';
+          html += '  <div class="task-top">';
+          html += '    <input class="task-check" type="checkbox" data-role="check" data-task-num="' + task.num + '"' + (active ? ' checked' : '') + ' />';
+          html += '    <div class="task-info">';
+          html += '      <div class="task-title">№ ' + task.num + ' — ' + escapeHtml(task.title) + '</div>';
+          html += '      <div class="task-meta">' + (task.partial ? ('до ' + task.maxPoints + ' первичных ' + pointsWord(task.maxPoints)) : '1 первичный балл') + '</div>';
+          html += '    </div>';
+          html += '  </div>';
+
+          if (task.partial) {
+            html += '  <div class="partial-row">';
+            html += '    <span>Сколько баллов за задачу</span>';
+            html += '    <select class="partial-score" data-role="score" data-task-num="' + task.num + '">';
+            html += buildSelectOptions(task.maxPoints, currentValue);
+            html += '    </select>';
+            html += '  </div>';
+          }
+
+          html += '</div>';
+        });
+
+        tasksGrid.innerHTML = html;
+      }
+
+      function renderScale() {
+        let html = '';
+        Object.keys(scale).forEach(function (primary) {
+          html += '<tr><td>' + primary + '</td><td>' + scale[primary] + '</td></tr>';
+        });
+        scaleBody.innerHTML = html;
+      }
+
+      function getPrimaryScore() {
+        return tasks.reduce(function (sum, task) {
+          const value = state[task.num];
+          return sum + (task.partial ? value : (value ? 1 : 0));
+        }, 0);
+      }
+
+      function getSelectedSummary() {
+        const parts = [];
+
+        tasks.forEach(function (task) {
+          const value = state[task.num];
+          if (task.partial) {
+            if (value > 0) parts.push('№' + task.num + ' (' + value + ')');
+          } else if (value) {
+            parts.push('№' + task.num);
+          }
+        });
+
+        return parts;
+      }
+
+      function updateResult() {
+        const primary = getPrimaryScore();
+        const secondary = Object.prototype.hasOwnProperty.call(scale, primary) ? scale[primary] : 0;
+        const summary = getSelectedSummary();
+
+        primaryScoreEl.textContent = String(primary);
+        secondaryScoreEl.textContent = String(secondary);
+
+        if (summary.length === 0) {
+          statusTextEl.textContent = 'Пока ничего не выбрано.';
+          return;
+        }
+
+        statusTextEl.textContent = 'Выбрано задач: ' + summary.length + '. Учтены: ' + summary.join(', ') + '.';
+      }
+
+      function syncUI() {
+        renderTasks();
+        updateResult();
+      }
+
+      function setTaskChecked(taskNum, isChecked) {
+        const task = tasks.find(function (item) { return item.num === taskNum; });
+        if (!task) return;
+
+        if (task.partial) {
+          state[taskNum] = isChecked ? task.maxPoints : 0;
+        } else {
+          state[taskNum] = Boolean(isChecked);
+        }
+      }
+
+      function setTaskScore(taskNum, score) {
+        const task = tasks.find(function (item) { return item.num === taskNum; });
+        if (!task || !task.partial) return;
+
+        const normalized = Math.max(0, Math.min(task.maxPoints, Number(score) || 0));
+        state[taskNum] = normalized;
+      }
+
+      function setFirstPartFull() {
+        tasks.forEach(function (task) {
+          if (task.num <= 12) state[task.num] = true;
+        });
+        syncUI();
+      }
+
+      function setSecondPartFull() {
+        tasks.forEach(function (task) {
+          if (task.partial) state[task.num] = task.maxPoints;
+        });
+        syncUI();
+      }
+
+      function setAllFull() {
+        tasks.forEach(function (task) {
+          state[task.num] = task.partial ? task.maxPoints : true;
+        });
+        syncUI();
+      }
+
+      function clearAll() {
+        tasks.forEach(function (task) {
+          state[task.num] = task.partial ? 0 : false;
+        });
+        syncUI();
+      }
+
+      tasksGrid.addEventListener('click', function (event) {
+        const scoreControl = event.target.closest('[data-role="score"]');
+        if (scoreControl) return;
+
+        const checkbox = event.target.closest('[data-role="check"]');
+        if (checkbox) {
+          const taskNumFromCheck = Number(checkbox.getAttribute('data-task-num'));
+          const task = tasks.find(function (item) { return item.num === taskNumFromCheck; });
+          if (!task) return;
+
+          if (task.partial) {
+            state[taskNumFromCheck] = checkbox.checked ? task.maxPoints : 0;
+          } else {
+            state[taskNumFromCheck] = checkbox.checked;
+          }
+          syncUI();
+          return;
+        }
+
+        const card = event.target.closest('.task-card');
+        if (!card) return;
+
+        const taskNum = Number(card.getAttribute('data-task-num'));
+        const task = tasks.find(function (item) { return item.num === taskNum; });
+        if (!task) return;
+
+        if (task.partial) {
+          state[taskNum] = state[taskNum] > 0 ? 0 : task.maxPoints;
+        } else {
+          state[taskNum] = !state[taskNum];
+        }
+
+        syncUI();
+      });
+
+      tasksGrid.addEventListener('change', function (event) {
+        const scoreSelect = event.target.closest('[data-role="score"]');
+        if (!scoreSelect) return;
+
+        const taskNum = Number(scoreSelect.getAttribute('data-task-num'));
+        setTaskScore(taskNum, scoreSelect.value);
+        syncUI();
+      });
+
+      fullFirstPartBtn.addEventListener('click', setFirstPartFull);
+      fullSecondPartBtn.addEventListener('click', setSecondPartFull);
+      selectAllBtn.addEventListener('click', setAllFull);
+      clearBtn.addEventListener('click', clearAll);
+
+      function runTests() {
+        const testState = {
+          1: false,
+          18: 0,
+          19: 0
+        };
+
+        function assert(condition, message) {
+          if (!condition) {
+            throw new Error('Test failed: ' + message);
+          }
+        }
+
+        testState[1] = true;
+        assert(testState[1] === true, 'Задача 1 должна переключаться в true');
+
+        testState[18] = 4;
+        assert(testState[18] === 4, 'Задача 18 должна принимать 4 балла');
+
+        testState[18] = 0;
+        assert(testState[18] === 0, 'Задача 18 должна сбрасываться в 0');
+
+        testState[19] = 3;
+        assert(testState[19] === 3, 'Задача 19 должна принимать частичный балл 3');
+
+        assert(scale[32] === 100, '32 первичных должны давать 100 вторичных');
+        assert(scale[0] === 0, '0 первичных должны давать 0 вторичных');
+      }
+
+      renderScale();
+      clearAll();
+      runTests();
+    })();
+  </script>
+</body>
+</html>
