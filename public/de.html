@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Рейтинг по всем ID</title>
+  <title>Рейтинг по всем ID (с Устным туром)</title>
   <style>
     :root {
       --bg: #0b1020;
@@ -169,7 +169,7 @@
     .bars {
       margin-top: 16px;
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
       gap: 10px;
     }
     .bar-card {
@@ -339,7 +339,7 @@
       .result-grid {
         grid-template-columns: repeat(2, 1fr);
       }
-      .bars, .thresholds {
+      .thresholds {
         grid-template-columns: 1fr;
       }
     }
@@ -372,8 +372,8 @@
       <section class="card hero-main">
         <h1>Рейтинг по всем ID</h1>
         <p>
-          Автономная страница на реальных данных из CSV. Здесь можно найти любой ID,
-          сразу увидеть место в общем рейтинге, попасть ли в топ по процентам,
+          Автономная страница на реальных данных из CSV (с добавлением результатов устного тура).
+          Здесь можно найти любой ID, увидеть место в общем рейтинге по <b>Финальному баллу</b> (Письменный + Устный),
           а ниже — посмотреть полную отсортированную таблицу результатов.
         </p>
       </section>
@@ -386,7 +386,7 @@
             <div class="v" id="statCount">—</div>
           </div>
           <div class="mini">
-            <div class="k">Макс. балл</div>
+            <div class="k">Макс. балл (из 125)</div>
             <div class="v" id="statMax">—</div>
           </div>
           <div class="mini">
@@ -428,7 +428,7 @@
             <div class="sub">чем меньше процент, тем выше место</div>
           </div>
           <div class="result-card">
-            <div class="label">Итоговый балл</div>
+            <div class="label">Финальный балл</div>
             <div class="value" id="resTotal">—</div>
             <div class="sub" id="resPercentile">—</div>
           </div>
@@ -444,15 +444,15 @@
     </section>
 
     <section class="card section">
-      <h2>Пороги по топам</h2>
+      <h2>Пороги по топам (от Финального балла)</h2>
       <div class="thresholds" id="thresholds"></div>
       <div class="footer-note">
-        Порог показывает минимальный итоговый балл, с которым можно попасть в соответствующий диапазон верхней части таблицы.
+        Порог показывает минимальный финальный балл, с которым можно попасть в соответствующий диапазон верхней части таблицы.
       </div>
     </section>
 
     <section class="card section">
-      <h2>Распределение итоговых баллов</h2>
+      <h2>Распределение финальных баллов</h2>
       <div class="dist" id="distribution"></div>
     </section>
 
@@ -473,28 +473,356 @@
               <th data-key="id">ID</th>
               <th data-key="topPct">Топ %</th>
               <th data-key="lgt">ЛГТ</th>
-              <th data-key="country">Страноведение</th>
+              <th data-key="country">Стран.</th>
               <th data-key="reading">Чтение</th>
-              <th data-key="listening">Аудирование</th>
-              <th data-key="sum">Сумма</th>
-              <th data-key="grade">Оценка</th>
-              <th data-key="total">Итоговый балл</th>
+              <th data-key="listening">Ауд.</th>
+              <th data-key="sum">Сумма тестов</th>
+              <th data-key="grade">Письмо</th>
+              <th data-key="written">Итог (Письм.)</th>
+              <th data-key="oral">Устный</th>
+              <th data-key="total">Финальный балл</th>
             </tr>
           </thead>
           <tbody id="tbody"></tbody>
         </table>
       </div>
       <div class="footer-note">
-        Таблица изначально отсортирована по итоговому баллу по убыванию. По заголовкам можно пересортировать.
+        Таблица изначально отсортирована по финальному баллу по убыванию (в случае равенства приоритет у Устного тура, затем Письма). По заголовкам можно пересортировать.
       </div>
     </section>
   </div>
 
   <script>
-    const rows = [{"id": "ID-224", "pos": 1, "topPct": 0.4, "percentile": 100.0, "scorePct": 86.0, "lgt": 18, "country": 18, "reading": 19, "listening": 13, "sum": 68, "grade": 18, "total": 86}, {"id": "ID-244", "pos": 2, "topPct": 0.8, "percentile": 99.6, "scorePct": 85.0, "lgt": 20, "country": 16, "reading": 20, "listening": 13, "sum": 69, "grade": 16, "total": 85}, {"id": "ID-006", "pos": 3, "topPct": 1.2, "percentile": 99.2, "scorePct": 85.0, "lgt": 17, "country": 18, "reading": 18, "listening": 13, "sum": 66, "grade": 19, "total": 85}, {"id": "ID-204", "pos": 4, "topPct": 1.6, "percentile": 98.8, "scorePct": 83.0, "lgt": 18, "country": 12, "reading": 20, "listening": 14, "sum": 64, "grade": 19, "total": 83}, {"id": "ID-191", "pos": 5, "topPct": 2.0, "percentile": 98.4, "scorePct": 82.0, "lgt": 17, "country": 17, "reading": 20, "listening": 12, "sum": 66, "grade": 16, "total": 82}, {"id": "ID-145", "pos": 6, "topPct": 2.4, "percentile": 98.0, "scorePct": 82.0, "lgt": 18, "country": 15, "reading": 18, "listening": 14, "sum": 65, "grade": 17, "total": 82}, {"id": "ID-009", "pos": 7, "topPct": 2.8, "percentile": 97.6, "scorePct": 81.0, "lgt": 17, "country": 11, "reading": 19, "listening": 15, "sum": 62, "grade": 19, "total": 81}, {"id": "ID-060", "pos": 8, "topPct": 3.2, "percentile": 97.2, "scorePct": 80.0, "lgt": 15, "country": 18, "reading": 18, "listening": 14, "sum": 65, "grade": 15, "total": 80}, {"id": "ID-212", "pos": 9, "topPct": 3.6, "percentile": 96.8, "scorePct": 79.0, "lgt": 19, "country": 15, "reading": 18, "listening": 14, "sum": 66, "grade": 13, "total": 79}, {"id": "ID-159", "pos": 10, "topPct": 4.0, "percentile": 96.4, "scorePct": 79.0, "lgt": 19, "country": 14, "reading": 17, "listening": 14, "sum": 64, "grade": 15, "total": 79}, {"id": "ID-206", "pos": 11, "topPct": 4.5, "percentile": 96.0, "scorePct": 79.0, "lgt": 19, "country": 11, "reading": 20, "listening": 14, "sum": 64, "grade": 15, "total": 79}, {"id": "ID-109", "pos": 12, "topPct": 4.9, "percentile": 95.5, "scorePct": 79.0, "lgt": 16, "country": 18, "reading": 15, "listening": 13, "sum": 62, "grade": 17, "total": 79}, {"id": "ID-086", "pos": 13, "topPct": 5.3, "percentile": 95.1, "scorePct": 78.0, "lgt": 19, "country": 15, "reading": 20, "listening": 11, "sum": 65, "grade": 13, "total": 78}, {"id": "ID-170", "pos": 14, "topPct": 5.7, "percentile": 94.7, "scorePct": 78.0, "lgt": 16, "country": 13, "reading": 20, "listening": 14, "sum": 63, "grade": 15, "total": 78}, {"id": "ID-084", "pos": 15, "topPct": 6.1, "percentile": 94.3, "scorePct": 78.0, "lgt": 16, "country": 14, "reading": 19, "listening": 13, "sum": 62, "grade": 16, "total": 78}, {"id": "ID-147", "pos": 16, "topPct": 6.5, "percentile": 93.9, "scorePct": 78.0, "lgt": 17, "country": 11, "reading": 18, "listening": 14, "sum": 60, "grade": 18, "total": 78}, {"id": "ID-096", "pos": 17, "topPct": 6.9, "percentile": 93.5, "scorePct": 78.0, "lgt": 18, "country": 10, "reading": 17, "listening": 14, "sum": 59, "grade": 19, "total": 78}, {"id": "ID-043", "pos": 18, "topPct": 7.3, "percentile": 93.1, "scorePct": 77.0, "lgt": 19, "country": 13, "reading": 18, "listening": 15, "sum": 65, "grade": 12, "total": 77}, {"id": "ID-093", "pos": 19, "topPct": 7.7, "percentile": 92.7, "scorePct": 77.0, "lgt": 17, "country": 16, "reading": 17, "listening": 13, "sum": 63, "grade": 14, "total": 77}, {"id": "ID-105", "pos": 20, "topPct": 8.1, "percentile": 92.3, "scorePct": 77.0, "lgt": 17, "country": 12, "reading": 19, "listening": 13, "sum": 61, "grade": 16, "total": 77}, {"id": "ID-070", "pos": 21, "topPct": 8.5, "percentile": 91.9, "scorePct": 77.0, "lgt": 14, "country": 17, "reading": 18, "listening": 11, "sum": 60, "grade": 17, "total": 77}, {"id": "ID-013", "pos": 22, "topPct": 8.9, "percentile": 91.5, "scorePct": 77.0, "lgt": 14, "country": 16, "reading": 17, "listening": 13, "sum": 60, "grade": 17, "total": 77}, {"id": "ID-045", "pos": 23, "topPct": 9.3, "percentile": 91.1, "scorePct": 77.0, "lgt": 17, "country": 14, "reading": 17, "listening": 11, "sum": 59, "grade": 18, "total": 77}, {"id": "ID-034", "pos": 24, "topPct": 9.7, "percentile": 90.7, "scorePct": 76.0, "lgt": 15, "country": 16, "reading": 19, "listening": 13, "sum": 63, "grade": 13, "total": 76}, {"id": "ID-089", "pos": 25, "topPct": 10.1, "percentile": 90.3, "scorePct": 76.0, "lgt": 15, "country": 16, "reading": 19, "listening": 12, "sum": 62, "grade": 14, "total": 76}, {"id": "ID-008", "pos": 26, "topPct": 10.5, "percentile": 89.9, "scorePct": 76.0, "lgt": 15, "country": 16, "reading": 18, "listening": 13, "sum": 62, "grade": 14, "total": 76}, {"id": "ID-123", "pos": 27, "topPct": 10.9, "percentile": 89.5, "scorePct": 76.0, "lgt": 16, "country": 13, "reading": 19, "listening": 13, "sum": 61, "grade": 15, "total": 76}, {"id": "ID-104", "pos": 28, "topPct": 11.3, "percentile": 89.1, "scorePct": 76.0, "lgt": 13, "country": 16, "reading": 20, "listening": 12, "sum": 61, "grade": 15, "total": 76}, {"id": "ID-081", "pos": 29, "topPct": 11.7, "percentile": 88.7, "scorePct": 76.0, "lgt": 15, "country": 12, "reading": 18, "listening": 15, "sum": 60, "grade": 16, "total": 76}, {"id": "ID-029", "pos": 30, "topPct": 12.1, "percentile": 88.3, "scorePct": 76.0, "lgt": 15, "country": 13, "reading": 17, "listening": 14, "sum": 59, "grade": 17, "total": 76}, {"id": "ID-178", "pos": 31, "topPct": 12.6, "percentile": 87.9, "scorePct": 75.0, "lgt": 18, "country": 10, "reading": 19, "listening": 15, "sum": 62, "grade": 13, "total": 75}, {"id": "ID-088", "pos": 32, "topPct": 13.0, "percentile": 87.4, "scorePct": 75.0, "lgt": 15, "country": 15, "reading": 17, "listening": 14, "sum": 61, "grade": 14, "total": 75}, {"id": "ID-152", "pos": 33, "topPct": 13.4, "percentile": 87.0, "scorePct": 75.0, "lgt": 15, "country": 11, "reading": 20, "listening": 13, "sum": 59, "grade": 16, "total": 75}, {"id": "ID-242", "pos": 34, "topPct": 13.8, "percentile": 86.6, "scorePct": 75.0, "lgt": 16, "country": 11, "reading": 19, "listening": 12, "sum": 58, "grade": 17, "total": 75}, {"id": "ID-031", "pos": 35, "topPct": 14.2, "percentile": 86.2, "scorePct": 75.0, "lgt": 16, "country": 9, "reading": 18, "listening": 12, "sum": 55, "grade": 20, "total": 75}, {"id": "ID-102", "pos": 36, "topPct": 14.6, "percentile": 85.8, "scorePct": 74.0, "lgt": 17, "country": 14, "reading": 19, "listening": 13, "sum": 63, "grade": 11, "total": 74}, {"id": "ID-141", "pos": 37, "topPct": 15.0, "percentile": 85.4, "scorePct": 74.0, "lgt": 15, "country": 18, "reading": 16, "listening": 14, "sum": 63, "grade": 11, "total": 74}, {"id": "ID-182", "pos": 38, "topPct": 15.4, "percentile": 85.0, "scorePct": 74.0, "lgt": 18, "country": 11, "reading": 19, "listening": 14, "sum": 62, "grade": 12, "total": 74}, {"id": "ID-187", "pos": 39, "topPct": 15.8, "percentile": 84.6, "scorePct": 74.0, "lgt": 17, "country": 14, "reading": 16, "listening": 14, "sum": 61, "grade": 13, "total": 74}, {"id": "ID-108", "pos": 40, "topPct": 16.2, "percentile": 84.2, "scorePct": 74.0, "lgt": 15, "country": 14, "reading": 19, "listening": 13, "sum": 61, "grade": 13, "total": 74}, {"id": "ID-079", "pos": 41, "topPct": 16.6, "percentile": 83.8, "scorePct": 74.0, "lgt": 14, "country": 19, "reading": 16, "listening": 11, "sum": 60, "grade": 14, "total": 74}, {"id": "ID-164", "pos": 42, "topPct": 17.0, "percentile": 83.4, "scorePct": 74.0, "lgt": 14, "country": 13, "reading": 20, "listening": 12, "sum": 59, "grade": 15, "total": 74}, {"id": "ID-243", "pos": 43, "topPct": 17.4, "percentile": 83.0, "scorePct": 74.0, "lgt": 13, "country": 14, "reading": 18, "listening": 10, "sum": 55, "grade": 19, "total": 74}, {"id": "ID-036", "pos": 44, "topPct": 17.8, "percentile": 82.6, "scorePct": 73.0, "lgt": 14, "country": 18, "reading": 18, "listening": 14, "sum": 64, "grade": 9, "total": 73}, {"id": "ID-205", "pos": 45, "topPct": 18.2, "percentile": 82.2, "scorePct": 73.0, "lgt": 17, "country": 15, "reading": 20, "listening": 10, "sum": 62, "grade": 11, "total": 73}, {"id": "ID-110", "pos": 46, "topPct": 18.6, "percentile": 81.8, "scorePct": 73.0, "lgt": 15, "country": 17, "reading": 17, "listening": 13, "sum": 62, "grade": 11, "total": 73}, {"id": "ID-003", "pos": 47, "topPct": 19.0, "percentile": 81.4, "scorePct": 72.0, "lgt": 17, "country": 13, "reading": 19, "listening": 14, "sum": 63, "grade": 9, "total": 72}, {"id": "ID-151", "pos": 48, "topPct": 19.4, "percentile": 81.0, "scorePct": 72.0, "lgt": 13, "country": 18, "reading": 18, "listening": 12, "sum": 61, "grade": 11, "total": 72}, {"id": "ID-240", "pos": 49, "topPct": 19.8, "percentile": 80.6, "scorePct": 72.0, "lgt": 13, "country": 15, "reading": 18, "listening": 15, "sum": 61, "grade": 11, "total": 72}, {"id": "ID-065", "pos": 50, "topPct": 20.2, "percentile": 80.2, "scorePct": 72.0, "lgt": 12, "country": 17, "reading": 18, "listening": 12, "sum": 59, "grade": 13, "total": 72}, {"id": "ID-087", "pos": 51, "topPct": 20.6, "percentile": 79.8, "scorePct": 72.0, "lgt": 18, "country": 8, "reading": 18, "listening": 14, "sum": 58, "grade": 14, "total": 72}, {"id": "ID-195", "pos": 52, "topPct": 21.1, "percentile": 79.4, "scorePct": 72.0, "lgt": 17, "country": 10, "reading": 17, "listening": 14, "sum": 58, "grade": 14, "total": 72}, {"id": "ID-062", "pos": 53, "topPct": 21.5, "percentile": 78.9, "scorePct": 71.0, "lgt": 17, "country": 16, "reading": 20, "listening": 12, "sum": 65, "grade": 6, "total": 71}, {"id": "ID-083", "pos": 54, "topPct": 21.9, "percentile": 78.5, "scorePct": 71.0, "lgt": 18, "country": 14, "reading": 19, "listening": 11, "sum": 62, "grade": 9, "total": 71}, {"id": "ID-247", "pos": 55, "topPct": 22.3, "percentile": 78.1, "scorePct": 71.0, "lgt": 16, "country": 14, "reading": 18, "listening": 14, "sum": 62, "grade": 9, "total": 71}, {"id": "ID-113", "pos": 56, "topPct": 22.7, "percentile": 77.7, "scorePct": 71.0, "lgt": 15, "country": 19, "reading": 17, "listening": 11, "sum": 62, "grade": 9, "total": 71}, {"id": "ID-136", "pos": 57, "topPct": 23.1, "percentile": 77.3, "scorePct": 71.0, "lgt": 16, "country": 15, "reading": 19, "listening": 11, "sum": 61, "grade": 10, "total": 71}, {"id": "ID-144", "pos": 58, "topPct": 23.5, "percentile": 76.9, "scorePct": 71.0, "lgt": 15, "country": 16, "reading": 18, "listening": 12, "sum": 61, "grade": 10, "total": 71}, {"id": "ID-116", "pos": 59, "topPct": 23.9, "percentile": 76.5, "scorePct": 71.0, "lgt": 18, "country": 13, "reading": 19, "listening": 10, "sum": 60, "grade": 11, "total": 71}, {"id": "ID-189", "pos": 60, "topPct": 24.3, "percentile": 76.1, "scorePct": 71.0, "lgt": 17, "country": 14, "reading": 16, "listening": 13, "sum": 60, "grade": 11, "total": 71}, {"id": "ID-213", "pos": 61, "topPct": 24.7, "percentile": 75.7, "scorePct": 71.0, "lgt": 18, "country": 12, "reading": 17, "listening": 12, "sum": 59, "grade": 12, "total": 71}, {"id": "ID-046", "pos": 62, "topPct": 25.1, "percentile": 75.3, "scorePct": 71.0, "lgt": 10, "country": 17, "reading": 16, "listening": 15, "sum": 58, "grade": 13, "total": 71}, {"id": "ID-112", "pos": 63, "topPct": 25.5, "percentile": 74.9, "scorePct": 71.0, "lgt": 13, "country": 15, "reading": 17, "listening": 12, "sum": 57, "grade": 14, "total": 71}, {"id": "ID-075", "pos": 64, "topPct": 25.9, "percentile": 74.5, "scorePct": 71.0, "lgt": 13, "country": 13, "reading": 20, "listening": 11, "sum": 57, "grade": 14, "total": 71}, {"id": "ID-085", "pos": 65, "topPct": 26.3, "percentile": 74.1, "scorePct": 71.0, "lgt": 6, "country": 20, "reading": 14, "listening": 15, "sum": 55, "grade": 16, "total": 71}, {"id": "ID-233", "pos": 66, "topPct": 26.7, "percentile": 73.7, "scorePct": 71.0, "lgt": 16, "country": 9, "reading": 17, "listening": 12, "sum": 54, "grade": 17, "total": 71}, {"id": "ID-039", "pos": 67, "topPct": 27.1, "percentile": 73.3, "scorePct": 70.0, "lgt": 16, "country": 17, "reading": 17, "listening": 12, "sum": 62, "grade": 8, "total": 70}, {"id": "ID-225", "pos": 68, "topPct": 27.5, "percentile": 72.9, "scorePct": 70.0, "lgt": 15, "country": 16, "reading": 20, "listening": 10, "sum": 61, "grade": 9, "total": 70}, {"id": "ID-230", "pos": 69, "topPct": 27.9, "percentile": 72.5, "scorePct": 70.0, "lgt": 15, "country": 14, "reading": 19, "listening": 13, "sum": 61, "grade": 9, "total": 70}, {"id": "ID-223", "pos": 70, "topPct": 28.3, "percentile": 72.1, "scorePct": 70.0, "lgt": 15, "country": 16, "reading": 17, "listening": 11, "sum": 59, "grade": 11, "total": 70}, {"id": "ID-160", "pos": 71, "topPct": 28.7, "percentile": 71.7, "scorePct": 70.0, "lgt": 18, "country": 12, "reading": 18, "listening": 10, "sum": 58, "grade": 12, "total": 70}, {"id": "ID-063", "pos": 72, "topPct": 29.1, "percentile": 71.3, "scorePct": 70.0, "lgt": 12, "country": 17, "reading": 17, "listening": 11, "sum": 57, "grade": 13, "total": 70}, {"id": "ID-012", "pos": 73, "topPct": 29.6, "percentile": 70.9, "scorePct": 70.0, "lgt": 15, "country": 12, "reading": 16, "listening": 13, "sum": 56, "grade": 14, "total": 70}, {"id": "ID-168", "pos": 74, "topPct": 30.0, "percentile": 70.4, "scorePct": 70.0, "lgt": 14, "country": 12, "reading": 19, "listening": 11, "sum": 56, "grade": 14, "total": 70}, {"id": "ID-222", "pos": 75, "topPct": 30.4, "percentile": 70.0, "scorePct": 70.0, "lgt": 16, "country": 13, "reading": 16, "listening": 10, "sum": 55, "grade": 15, "total": 70}, {"id": "ID-131", "pos": 76, "topPct": 30.8, "percentile": 69.6, "scorePct": 70.0, "lgt": 14, "country": 14, "reading": 16, "listening": 11, "sum": 55, "grade": 15, "total": 70}, {"id": "ID-234", "pos": 77, "topPct": 31.2, "percentile": 69.2, "scorePct": 70.0, "lgt": 16, "country": 10, "reading": 16, "listening": 12, "sum": 54, "grade": 16, "total": 70}, {"id": "ID-166", "pos": 78, "topPct": 31.6, "percentile": 68.8, "scorePct": 70.0, "lgt": 10, "country": 12, "reading": 18, "listening": 11, "sum": 51, "grade": 19, "total": 70}, {"id": "ID-158", "pos": 79, "topPct": 32.0, "percentile": 68.4, "scorePct": 69.0, "lgt": 8, "country": 18, "reading": 17, "listening": 15, "sum": 58, "grade": 11, "total": 69}, {"id": "ID-069", "pos": 80, "topPct": 32.4, "percentile": 68.0, "scorePct": 69.0, "lgt": 16, "country": 12, "reading": 18, "listening": 11, "sum": 57, "grade": 12, "total": 69}, {"id": "ID-092", "pos": 81, "topPct": 32.8, "percentile": 67.6, "scorePct": 69.0, "lgt": 11, "country": 17, "reading": 19, "listening": 10, "sum": 57, "grade": 12, "total": 69}, {"id": "ID-154", "pos": 82, "topPct": 33.2, "percentile": 67.2, "scorePct": 69.0, "lgt": 14, "country": 12, "reading": 19, "listening": 11, "sum": 56, "grade": 13, "total": 69}, {"id": "ID-044", "pos": 83, "topPct": 33.6, "percentile": 66.8, "scorePct": 69.0, "lgt": 13, "country": 15, "reading": 16, "listening": 12, "sum": 56, "grade": 13, "total": 69}, {"id": "ID-184", "pos": 84, "topPct": 34.0, "percentile": 66.4, "scorePct": 69.0, "lgt": 11, "country": 15, "reading": 19, "listening": 10, "sum": 55, "grade": 14, "total": 69}, {"id": "ID-097", "pos": 85, "topPct": 34.4, "percentile": 66.0, "scorePct": 69.0, "lgt": 14, "country": 10, "reading": 17, "listening": 13, "sum": 54, "grade": 15, "total": 69}, {"id": "ID-068", "pos": 86, "topPct": 34.8, "percentile": 65.6, "scorePct": 69.0, "lgt": 11, "country": 12, "reading": 18, "listening": 12, "sum": 53, "grade": 16, "total": 69}, {"id": "ID-207", "pos": 87, "topPct": 35.2, "percentile": 65.2, "scorePct": 69.0, "lgt": 11, "country": 11, "reading": 17, "listening": 14, "sum": 53, "grade": 16, "total": 69}, {"id": "ID-103", "pos": 88, "topPct": 35.6, "percentile": 64.8, "scorePct": 68.0, "lgt": 15, "country": 15, "reading": 18, "listening": 12, "sum": 60, "grade": 8, "total": 68}, {"id": "ID-138", "pos": 89, "topPct": 36.0, "percentile": 64.4, "scorePct": 68.0, "lgt": 19, "country": 7, "reading": 19, "listening": 12, "sum": 57, "grade": 11, "total": 68}, {"id": "ID-072", "pos": 90, "topPct": 36.4, "percentile": 64.0, "scorePct": 68.0, "lgt": 16, "country": 11, "reading": 19, "listening": 10, "sum": 56, "grade": 12, "total": 68}, {"id": "ID-076", "pos": 91, "topPct": 36.8, "percentile": 63.6, "scorePct": 68.0, "lgt": 16, "country": 8, "reading": 19, "listening": 13, "sum": 56, "grade": 12, "total": 68}, {"id": "ID-228", "pos": 92, "topPct": 37.2, "percentile": 63.2, "scorePct": 68.0, "lgt": 16, "country": 6, "reading": 19, "listening": 13, "sum": 54, "grade": 14, "total": 68}, {"id": "ID-231", "pos": 93, "topPct": 37.7, "percentile": 62.8, "scorePct": 68.0, "lgt": 13, "country": 12, "reading": 17, "listening": 12, "sum": 54, "grade": 14, "total": 68}, {"id": "ID-125", "pos": 94, "topPct": 38.1, "percentile": 62.3, "scorePct": 68.0, "lgt": 17, "country": 7, "reading": 18, "listening": 11, "sum": 53, "grade": 15, "total": 68}, {"id": "ID-001", "pos": 95, "topPct": 38.5, "percentile": 61.9, "scorePct": 68.0, "lgt": 15, "country": 12, "reading": 17, "listening": 8, "sum": 52, "grade": 16, "total": 68}, {"id": "ID-133", "pos": 96, "topPct": 38.9, "percentile": 61.5, "scorePct": 68.0, "lgt": 12, "country": 10, "reading": 19, "listening": 11, "sum": 52, "grade": 16, "total": 68}, {"id": "ID-193", "pos": 97, "topPct": 39.3, "percentile": 61.1, "scorePct": 67.0, "lgt": 16, "country": 11, "reading": 18, "listening": 13, "sum": 58, "grade": 9, "total": 67}, {"id": "ID-058", "pos": 98, "topPct": 39.7, "percentile": 60.7, "scorePct": 67.0, "lgt": 11, "country": 14, "reading": 19, "listening": 14, "sum": 58, "grade": 9, "total": 67}, {"id": "ID-014", "pos": 99, "topPct": 40.1, "percentile": 60.3, "scorePct": 67.0, "lgt": 16, "country": 14, "reading": 15, "listening": 12, "sum": 57, "grade": 10, "total": 67}, {"id": "ID-155", "pos": 100, "topPct": 40.5, "percentile": 59.9, "scorePct": 67.0, "lgt": 12, "country": 16, "reading": 18, "listening": 11, "sum": 57, "grade": 10, "total": 67}, {"id": "ID-120", "pos": 101, "topPct": 40.9, "percentile": 59.5, "scorePct": 67.0, "lgt": 14, "country": 9, "reading": 18, "listening": 15, "sum": 56, "grade": 11, "total": 67}, {"id": "ID-101", "pos": 102, "topPct": 41.3, "percentile": 59.1, "scorePct": 67.0, "lgt": 13, "country": 14, "reading": 18, "listening": 10, "sum": 55, "grade": 12, "total": 67}, {"id": "ID-037", "pos": 103, "topPct": 41.7, "percentile": 58.7, "scorePct": 67.0, "lgt": 16, "country": 10, "reading": 17, "listening": 11, "sum": 54, "grade": 13, "total": 67}, {"id": "ID-129", "pos": 104, "topPct": 42.1, "percentile": 58.3, "scorePct": 67.0, "lgt": 14, "country": 12, "reading": 17, "listening": 11, "sum": 54, "grade": 13, "total": 67}, {"id": "ID-148", "pos": 105, "topPct": 42.5, "percentile": 57.9, "scorePct": 67.0, "lgt": 13, "country": 12, "reading": 20, "listening": 9, "sum": 54, "grade": 13, "total": 67}, {"id": "ID-005", "pos": 106, "topPct": 42.9, "percentile": 57.5, "scorePct": 67.0, "lgt": 13, "country": 11, "reading": 18, "listening": 11, "sum": 53, "grade": 14, "total": 67}, {"id": "ID-119", "pos": 107, "topPct": 43.3, "percentile": 57.1, "scorePct": 67.0, "lgt": 9, "country": 11, "reading": 18, "listening": 14, "sum": 52, "grade": 15, "total": 67}, {"id": "ID-040", "pos": 108, "topPct": 43.7, "percentile": 56.7, "scorePct": 67.0, "lgt": 12, "country": 12, "reading": 17, "listening": 10, "sum": 51, "grade": 16, "total": 67}, {"id": "ID-066", "pos": 109, "topPct": 44.1, "percentile": 56.3, "scorePct": 67.0, "lgt": 11, "country": 13, "reading": 18, "listening": 9, "sum": 51, "grade": 16, "total": 67}, {"id": "ID-115", "pos": 110, "topPct": 44.5, "percentile": 55.9, "scorePct": 66.0, "lgt": 13, "country": 13, "reading": 18, "listening": 12, "sum": 56, "grade": 10, "total": 66}, {"id": "ID-208", "pos": 111, "topPct": 44.9, "percentile": 55.5, "scorePct": 66.0, "lgt": 13, "country": 12, "reading": 19, "listening": 12, "sum": 56, "grade": 10, "total": 66}, {"id": "ID-173", "pos": 112, "topPct": 45.3, "percentile": 55.1, "scorePct": 66.0, "lgt": 19, "country": 9, "reading": 17, "listening": 9, "sum": 54, "grade": 12, "total": 66}, {"id": "ID-226", "pos": 113, "topPct": 45.7, "percentile": 54.7, "scorePct": 66.0, "lgt": 10, "country": 16, "reading": 17, "listening": 11, "sum": 54, "grade": 12, "total": 66}, {"id": "ID-061", "pos": 114, "topPct": 46.2, "percentile": 54.3, "scorePct": 66.0, "lgt": 15, "country": 14, "reading": 14, "listening": 10, "sum": 53, "grade": 13, "total": 66}, {"id": "ID-126", "pos": 115, "topPct": 46.6, "percentile": 53.8, "scorePct": 66.0, "lgt": 14, "country": 7, "reading": 18, "listening": 14, "sum": 53, "grade": 13, "total": 66}, {"id": "ID-041", "pos": 116, "topPct": 47.0, "percentile": 53.4, "scorePct": 66.0, "lgt": 11, "country": 13, "reading": 15, "listening": 11, "sum": 50, "grade": 16, "total": 66}, {"id": "ID-054", "pos": 117, "topPct": 47.4, "percentile": 53.0, "scorePct": 66.0, "lgt": 11, "country": 9, "reading": 17, "listening": 13, "sum": 50, "grade": 16, "total": 66}, {"id": "ID-057", "pos": 118, "topPct": 47.8, "percentile": 52.6, "scorePct": 65.0, "lgt": 15, "country": 11, "reading": 18, "listening": 12, "sum": 56, "grade": 9, "total": 65}, {"id": "ID-192", "pos": 119, "topPct": 48.2, "percentile": 52.2, "scorePct": 65.0, "lgt": 13, "country": 15, "reading": 17, "listening": 11, "sum": 56, "grade": 9, "total": 65}, {"id": "ID-174", "pos": 120, "topPct": 48.6, "percentile": 51.8, "scorePct": 65.0, "lgt": 10, "country": 15, "reading": 19, "listening": 10, "sum": 54, "grade": 11, "total": 65}, {"id": "ID-030", "pos": 121, "topPct": 49.0, "percentile": 51.4, "scorePct": 65.0, "lgt": 15, "country": 11, "reading": 16, "listening": 11, "sum": 53, "grade": 12, "total": 65}, {"id": "ID-056", "pos": 122, "topPct": 49.4, "percentile": 51.0, "scorePct": 65.0, "lgt": 10, "country": 14, "reading": 17, "listening": 11, "sum": 52, "grade": 13, "total": 65}, {"id": "ID-135", "pos": 123, "topPct": 49.8, "percentile": 50.6, "scorePct": 65.0, "lgt": 12, "country": 9, "reading": 18, "listening": 11, "sum": 50, "grade": 15, "total": 65}, {"id": "ID-002", "pos": 124, "topPct": 50.2, "percentile": 50.2, "scorePct": 65.0, "lgt": 10, "country": 8, "reading": 18, "listening": 13, "sum": 49, "grade": 16, "total": 65}, {"id": "ID-157", "pos": 125, "topPct": 50.6, "percentile": 49.8, "scorePct": 64.0, "lgt": 17, "country": 10, "reading": 19, "listening": 11, "sum": 57, "grade": 7, "total": 64}, {"id": "ID-219", "pos": 126, "topPct": 51.0, "percentile": 49.4, "scorePct": 64.0, "lgt": 15, "country": 16, "reading": 16, "listening": 10, "sum": 57, "grade": 7, "total": 64}, {"id": "ID-235", "pos": 127, "topPct": 51.4, "percentile": 49.0, "scorePct": 64.0, "lgt": 18, "country": 10, "reading": 17, "listening": 10, "sum": 55, "grade": 9, "total": 64}, {"id": "ID-015", "pos": 128, "topPct": 51.8, "percentile": 48.6, "scorePct": 64.0, "lgt": 15, "country": 11, "reading": 17, "listening": 11, "sum": 54, "grade": 10, "total": 64}, {"id": "ID-127", "pos": 129, "topPct": 52.2, "percentile": 48.2, "scorePct": 64.0, "lgt": 14, "country": 8, "reading": 18, "listening": 14, "sum": 54, "grade": 10, "total": 64}, {"id": "ID-016", "pos": 130, "topPct": 52.6, "percentile": 47.8, "scorePct": 64.0, "lgt": 13, "country": 10, "reading": 18, "listening": 13, "sum": 54, "grade": 10, "total": 64}, {"id": "ID-033", "pos": 131, "topPct": 53.0, "percentile": 47.4, "scorePct": 64.0, "lgt": 9, "country": 15, "reading": 18, "listening": 12, "sum": 54, "grade": 10, "total": 64}, {"id": "ID-186", "pos": 132, "topPct": 53.4, "percentile": 47.0, "scorePct": 64.0, "lgt": 11, "country": 13, "reading": 18, "listening": 11, "sum": 53, "grade": 11, "total": 64}, {"id": "ID-196", "pos": 133, "topPct": 53.8, "percentile": 46.6, "scorePct": 64.0, "lgt": 14, "country": 10, "reading": 17, "listening": 11, "sum": 52, "grade": 12, "total": 64}, {"id": "ID-053", "pos": 134, "topPct": 54.3, "percentile": 46.2, "scorePct": 64.0, "lgt": 10, "country": 12, "reading": 17, "listening": 13, "sum": 52, "grade": 12, "total": 64}, {"id": "ID-100", "pos": 135, "topPct": 54.7, "percentile": 45.7, "scorePct": 64.0, "lgt": 9, "country": 16, "reading": 16, "listening": 11, "sum": 52, "grade": 12, "total": 64}, {"id": "ID-180", "pos": 136, "topPct": 55.1, "percentile": 45.3, "scorePct": 64.0, "lgt": 12, "country": 12, "reading": 13, "listening": 14, "sum": 51, "grade": 13, "total": 64}, {"id": "ID-132", "pos": 137, "topPct": 55.5, "percentile": 44.9, "scorePct": 64.0, "lgt": 9, "country": 14, "reading": 18, "listening": 10, "sum": 51, "grade": 13, "total": 64}, {"id": "ID-049", "pos": 138, "topPct": 55.9, "percentile": 44.5, "scorePct": 64.0, "lgt": 15, "country": 8, "reading": 18, "listening": 9, "sum": 50, "grade": 14, "total": 64}, {"id": "ID-239", "pos": 139, "topPct": 56.3, "percentile": 44.1, "scorePct": 64.0, "lgt": 13, "country": 8, "reading": 16, "listening": 12, "sum": 49, "grade": 15, "total": 64}, {"id": "ID-165", "pos": 140, "topPct": 56.7, "percentile": 43.7, "scorePct": 64.0, "lgt": 12, "country": 10, "reading": 17, "listening": 10, "sum": 49, "grade": 15, "total": 64}, {"id": "ID-099", "pos": 141, "topPct": 57.1, "percentile": 43.3, "scorePct": 63.0, "lgt": 12, "country": 16, "reading": 18, "listening": 11, "sum": 57, "grade": 6, "total": 63}, {"id": "ID-024", "pos": 142, "topPct": 57.5, "percentile": 42.9, "scorePct": 63.0, "lgt": 18, "country": 7, "reading": 18, "listening": 11, "sum": 54, "grade": 9, "total": 63}, {"id": "ID-011", "pos": 143, "topPct": 57.9, "percentile": 42.5, "scorePct": 63.0, "lgt": 14, "country": 11, "reading": 18, "listening": 11, "sum": 54, "grade": 9, "total": 63}, {"id": "ID-035", "pos": 144, "topPct": 58.3, "percentile": 42.1, "scorePct": 63.0, "lgt": 13, "country": 12, "reading": 15, "listening": 13, "sum": 53, "grade": 10, "total": 63}, {"id": "ID-050", "pos": 145, "topPct": 58.7, "percentile": 41.7, "scorePct": 63.0, "lgt": 8, "country": 16, "reading": 18, "listening": 11, "sum": 53, "grade": 10, "total": 63}, {"id": "ID-055", "pos": 146, "topPct": 59.1, "percentile": 41.3, "scorePct": 63.0, "lgt": 18, "country": 11, "reading": 15, "listening": 8, "sum": 52, "grade": 11, "total": 63}, {"id": "ID-227", "pos": 147, "topPct": 59.5, "percentile": 40.9, "scorePct": 63.0, "lgt": 12, "country": 11, "reading": 18, "listening": 11, "sum": 52, "grade": 11, "total": 63}, {"id": "ID-140", "pos": 148, "topPct": 59.9, "percentile": 40.5, "scorePct": 63.0, "lgt": 12, "country": 12, "reading": 17, "listening": 10, "sum": 51, "grade": 12, "total": 63}, {"id": "ID-130", "pos": 149, "topPct": 60.3, "percentile": 40.1, "scorePct": 63.0, "lgt": 12, "country": 9, "reading": 20, "listening": 10, "sum": 51, "grade": 12, "total": 63}, {"id": "ID-025", "pos": 150, "topPct": 60.7, "percentile": 39.7, "scorePct": 63.0, "lgt": 11, "country": 14, "reading": 16, "listening": 8, "sum": 49, "grade": 14, "total": 63}, {"id": "ID-078", "pos": 151, "topPct": 61.1, "percentile": 39.3, "scorePct": 63.0, "lgt": 14, "country": 11, "reading": 17, "listening": 6, "sum": 48, "grade": 15, "total": 63}, {"id": "ID-162", "pos": 152, "topPct": 61.5, "percentile": 38.9, "scorePct": 62.0, "lgt": 11, "country": 19, "reading": 18, "listening": 9, "sum": 57, "grade": 5, "total": 62}, {"id": "ID-210", "pos": 153, "topPct": 61.9, "percentile": 38.5, "scorePct": 62.0, "lgt": 17, "country": 11, "reading": 17, "listening": 10, "sum": 55, "grade": 7, "total": 62}, {"id": "ID-073", "pos": 154, "topPct": 62.3, "percentile": 38.1, "scorePct": 62.0, "lgt": 16, "country": 7, "reading": 18, "listening": 13, "sum": 54, "grade": 8, "total": 62}, {"id": "ID-004", "pos": 155, "topPct": 62.8, "percentile": 37.7, "scorePct": 62.0, "lgt": 12, "country": 15, "reading": 16, "listening": 11, "sum": 54, "grade": 8, "total": 62}, {"id": "ID-220", "pos": 156, "topPct": 63.2, "percentile": 37.2, "scorePct": 62.0, "lgt": 7, "country": 17, "reading": 18, "listening": 10, "sum": 52, "grade": 10, "total": 62}, {"id": "ID-032", "pos": 157, "topPct": 63.6, "percentile": 36.8, "scorePct": 62.0, "lgt": 15, "country": 8, "reading": 18, "listening": 10, "sum": 51, "grade": 11, "total": 62}, {"id": "ID-080", "pos": 158, "topPct": 64.0, "percentile": 36.4, "scorePct": 62.0, "lgt": 15, "country": 8, "reading": 17, "listening": 11, "sum": 51, "grade": 11, "total": 62}, {"id": "ID-217", "pos": 159, "topPct": 64.4, "percentile": 36.0, "scorePct": 62.0, "lgt": 10, "country": 13, "reading": 16, "listening": 12, "sum": 51, "grade": 11, "total": 62}, {"id": "ID-020", "pos": 160, "topPct": 64.8, "percentile": 35.6, "scorePct": 62.0, "lgt": 10, "country": 13, "reading": 16, "listening": 11, "sum": 50, "grade": 12, "total": 62}, {"id": "ID-194", "pos": 161, "topPct": 65.2, "percentile": 35.2, "scorePct": 62.0, "lgt": 13, "country": 10, "reading": 17, "listening": 7, "sum": 47, "grade": 15, "total": 62}, {"id": "ID-150", "pos": 162, "topPct": 65.6, "percentile": 34.8, "scorePct": 61.0, "lgt": 11, "country": 14, "reading": 18, "listening": 12, "sum": 55, "grade": 6, "total": 61}, {"id": "ID-236", "pos": 163, "topPct": 66.0, "percentile": 34.4, "scorePct": 61.0, "lgt": 12, "country": 12, "reading": 16, "listening": 13, "sum": 53, "grade": 8, "total": 61}, {"id": "ID-190", "pos": 164, "topPct": 66.4, "percentile": 34.0, "scorePct": 61.0, "lgt": 10, "country": 12, "reading": 15, "listening": 14, "sum": 51, "grade": 10, "total": 61}, {"id": "ID-179", "pos": 165, "topPct": 66.8, "percentile": 33.6, "scorePct": 61.0, "lgt": 14, "country": 6, "reading": 19, "listening": 10, "sum": 49, "grade": 12, "total": 61}, {"id": "ID-172", "pos": 166, "topPct": 67.2, "percentile": 33.2, "scorePct": 61.0, "lgt": 12, "country": 8, "reading": 16, "listening": 11, "sum": 47, "grade": 14, "total": 61}, {"id": "ID-198", "pos": 167, "topPct": 67.6, "percentile": 32.8, "scorePct": 61.0, "lgt": 12, "country": 7, "reading": 16, "listening": 12, "sum": 47, "grade": 14, "total": 61}, {"id": "ID-117", "pos": 168, "topPct": 68.0, "percentile": 32.4, "scorePct": 60.0, "lgt": 16, "country": 13, "reading": 16, "listening": 11, "sum": 56, "grade": 4, "total": 60}, {"id": "ID-023", "pos": 169, "topPct": 68.4, "percentile": 32.0, "scorePct": 60.0, "lgt": 15, "country": 13, "reading": 16, "listening": 12, "sum": 56, "grade": 4, "total": 60}, {"id": "ID-111", "pos": 170, "topPct": 68.8, "percentile": 31.6, "scorePct": 60.0, "lgt": 13, "country": 13, "reading": 17, "listening": 13, "sum": 56, "grade": 4, "total": 60}, {"id": "ID-143", "pos": 171, "topPct": 69.2, "percentile": 31.2, "scorePct": 60.0, "lgt": 15, "country": 7, "reading": 18, "listening": 11, "sum": 51, "grade": 9, "total": 60}, {"id": "ID-181", "pos": 172, "topPct": 69.6, "percentile": 30.8, "scorePct": 60.0, "lgt": 13, "country": 10, "reading": 17, "listening": 9, "sum": 49, "grade": 11, "total": 60}, {"id": "ID-149", "pos": 173, "topPct": 70.0, "percentile": 30.4, "scorePct": 60.0, "lgt": 11, "country": 10, "reading": 16, "listening": 12, "sum": 49, "grade": 11, "total": 60}, {"id": "ID-199", "pos": 174, "topPct": 70.4, "percentile": 30.0, "scorePct": 60.0, "lgt": 15, "country": 5, "reading": 17, "listening": 11, "sum": 48, "grade": 12, "total": 60}, {"id": "ID-107", "pos": 175, "topPct": 70.9, "percentile": 29.6, "scorePct": 60.0, "lgt": 10, "country": 9, "reading": 18, "listening": 11, "sum": 48, "grade": 12, "total": 60}, {"id": "ID-232", "pos": 176, "topPct": 71.3, "percentile": 29.1, "scorePct": 60.0, "lgt": 10, "country": 8, "reading": 19, "listening": 11, "sum": 48, "grade": 12, "total": 60}, {"id": "ID-218", "pos": 177, "topPct": 71.7, "percentile": 28.7, "scorePct": 60.0, "lgt": 10, "country": 9, "reading": 17, "listening": 10, "sum": 46, "grade": 14, "total": 60}, {"id": "ID-185", "pos": 178, "topPct": 72.1, "percentile": 28.3, "scorePct": 59.0, "lgt": 13, "country": 11, "reading": 19, "listening": 9, "sum": 52, "grade": 7, "total": 59}, {"id": "ID-098", "pos": 179, "topPct": 72.5, "percentile": 27.9, "scorePct": 59.0, "lgt": 13, "country": 11, "reading": 17, "listening": 9, "sum": 50, "grade": 9, "total": 59}, {"id": "ID-019", "pos": 180, "topPct": 72.9, "percentile": 27.5, "scorePct": 59.0, "lgt": 16, "country": 10, "reading": 15, "listening": 7, "sum": 48, "grade": 11, "total": 59}, {"id": "ID-106", "pos": 181, "topPct": 73.3, "percentile": 27.1, "scorePct": 59.0, "lgt": 14, "country": 8, "reading": 18, "listening": 8, "sum": 48, "grade": 11, "total": 59}, {"id": "ID-175", "pos": 182, "topPct": 73.7, "percentile": 26.7, "scorePct": 59.0, "lgt": 13, "country": 6, "reading": 18, "listening": 11, "sum": 48, "grade": 11, "total": 59}, {"id": "ID-241", "pos": 183, "topPct": 74.1, "percentile": 26.3, "scorePct": 59.0, "lgt": 11, "country": 8, "reading": 16, "listening": 13, "sum": 48, "grade": 11, "total": 59}, {"id": "ID-197", "pos": 184, "topPct": 74.5, "percentile": 25.9, "scorePct": 59.0, "lgt": 9, "country": 12, "reading": 18, "listening": 9, "sum": 48, "grade": 11, "total": 59}, {"id": "ID-216", "pos": 185, "topPct": 74.9, "percentile": 25.5, "scorePct": 59.0, "lgt": 8, "country": 13, "reading": 17, "listening": 10, "sum": 48, "grade": 11, "total": 59}, {"id": "ID-163", "pos": 186, "topPct": 75.3, "percentile": 25.1, "scorePct": 59.0, "lgt": 13, "country": 7, "reading": 18, "listening": 9, "sum": 47, "grade": 12, "total": 59}, {"id": "ID-059", "pos": 187, "topPct": 75.7, "percentile": 24.7, "scorePct": 59.0, "lgt": 10, "country": 11, "reading": 16, "listening": 9, "sum": 46, "grade": 13, "total": 59}, {"id": "ID-077", "pos": 188, "topPct": 76.1, "percentile": 24.3, "scorePct": 59.0, "lgt": 9, "country": 12, "reading": 16, "listening": 8, "sum": 45, "grade": 14, "total": 59}, {"id": "ID-027", "pos": 189, "topPct": 76.5, "percentile": 23.9, "scorePct": 59.0, "lgt": 7, "country": 12, "reading": 16, "listening": 10, "sum": 45, "grade": 14, "total": 59}, {"id": "ID-146", "pos": 190, "topPct": 76.9, "percentile": 23.5, "scorePct": 58.0, "lgt": 9, "country": 16, "reading": 16, "listening": 10, "sum": 51, "grade": 7, "total": 58}, {"id": "ID-047", "pos": 191, "topPct": 77.3, "percentile": 23.1, "scorePct": 58.0, "lgt": 13, "country": 7, "reading": 19, "listening": 11, "sum": 50, "grade": 8, "total": 58}, {"id": "ID-017", "pos": 192, "topPct": 77.7, "percentile": 22.7, "scorePct": 58.0, "lgt": 9, "country": 14, "reading": 17, "listening": 10, "sum": 50, "grade": 8, "total": 58}, {"id": "ID-118", "pos": 193, "topPct": 78.1, "percentile": 22.3, "scorePct": 58.0, "lgt": 12, "country": 14, "reading": 17, "listening": 5, "sum": 48, "grade": 10, "total": 58}, {"id": "ID-237", "pos": 194, "topPct": 78.5, "percentile": 21.9, "scorePct": 58.0, "lgt": 10, "country": 12, "reading": 16, "listening": 8, "sum": 46, "grade": 12, "total": 58}, {"id": "ID-095", "pos": 195, "topPct": 78.9, "percentile": 21.5, "scorePct": 58.0, "lgt": 10, "country": 10, "reading": 15, "listening": 11, "sum": 46, "grade": 12, "total": 58}, {"id": "ID-156", "pos": 196, "topPct": 79.4, "percentile": 21.1, "scorePct": 58.0, "lgt": 13, "country": 7, "reading": 17, "listening": 8, "sum": 45, "grade": 13, "total": 58}, {"id": "ID-211", "pos": 197, "topPct": 79.8, "percentile": 20.6, "scorePct": 57.0, "lgt": 16, "country": 8, "reading": 17, "listening": 11, "sum": 52, "grade": 5, "total": 57}, {"id": "ID-167", "pos": 198, "topPct": 80.2, "percentile": 20.2, "scorePct": 57.0, "lgt": 12, "country": 10, "reading": 16, "listening": 11, "sum": 49, "grade": 8, "total": 57}, {"id": "ID-091", "pos": 199, "topPct": 80.6, "percentile": 19.8, "scorePct": 57.0, "lgt": 10, "country": 11, "reading": 19, "listening": 9, "sum": 49, "grade": 8, "total": 57}, {"id": "ID-128", "pos": 200, "topPct": 81.0, "percentile": 19.4, "scorePct": 57.0, "lgt": 7, "country": 15, "reading": 17, "listening": 10, "sum": 49, "grade": 8, "total": 57}, {"id": "ID-171", "pos": 201, "topPct": 81.4, "percentile": 19.0, "scorePct": 57.0, "lgt": 10, "country": 11, "reading": 17, "listening": 10, "sum": 48, "grade": 9, "total": 57}, {"id": "ID-018", "pos": 202, "topPct": 81.8, "percentile": 18.6, "scorePct": 57.0, "lgt": 16, "country": 5, "reading": 18, "listening": 7, "sum": 46, "grade": 11, "total": 57}, {"id": "ID-176", "pos": 203, "topPct": 82.2, "percentile": 18.2, "scorePct": 57.0, "lgt": 13, "country": 9, "reading": 14, "listening": 10, "sum": 46, "grade": 11, "total": 57}, {"id": "ID-137", "pos": 204, "topPct": 82.6, "percentile": 17.8, "scorePct": 57.0, "lgt": 11, "country": 8, "reading": 14, "listening": 9, "sum": 42, "grade": 15, "total": 57}, {"id": "ID-042", "pos": 205, "topPct": 83.0, "percentile": 17.4, "scorePct": 57.0, "lgt": 10, "country": 6, "reading": 16, "listening": 10, "sum": 42, "grade": 15, "total": 57}, {"id": "ID-221", "pos": 206, "topPct": 83.4, "percentile": 17.0, "scorePct": 56.0, "lgt": 11, "country": 15, "reading": 16, "listening": 9, "sum": 51, "grade": 5, "total": 56}, {"id": "ID-094", "pos": 207, "topPct": 83.8, "percentile": 16.6, "scorePct": 56.0, "lgt": 8, "country": 11, "reading": 17, "listening": 12, "sum": 48, "grade": 8, "total": 56}, {"id": "ID-082", "pos": 208, "topPct": 84.2, "percentile": 16.2, "scorePct": 56.0, "lgt": 10, "country": 13, "reading": 16, "listening": 8, "sum": 47, "grade": 9, "total": 56}, {"id": "ID-134", "pos": 209, "topPct": 84.6, "percentile": 15.8, "scorePct": 56.0, "lgt": 10, "country": 6, "reading": 19, "listening": 10, "sum": 45, "grade": 11, "total": 56}, {"id": "ID-114", "pos": 210, "topPct": 85.0, "percentile": 15.4, "scorePct": 55.0, "lgt": 12, "country": 7, "reading": 17, "listening": 13, "sum": 49, "grade": 6, "total": 55}, {"id": "ID-161", "pos": 211, "topPct": 85.4, "percentile": 15.0, "scorePct": 55.0, "lgt": 12, "country": 9, "reading": 18, "listening": 9, "sum": 48, "grade": 7, "total": 55}, {"id": "ID-007", "pos": 212, "topPct": 85.8, "percentile": 14.6, "scorePct": 55.0, "lgt": 12, "country": 8, "reading": 16, "listening": 12, "sum": 48, "grade": 7, "total": 55}, {"id": "ID-139", "pos": 213, "topPct": 86.2, "percentile": 14.2, "scorePct": 55.0, "lgt": 7, "country": 9, "reading": 18, "listening": 12, "sum": 46, "grade": 9, "total": 55}, {"id": "ID-169", "pos": 214, "topPct": 86.6, "percentile": 13.8, "scorePct": 55.0, "lgt": 11, "country": 7, "reading": 16, "listening": 9, "sum": 43, "grade": 12, "total": 55}, {"id": "ID-048", "pos": 215, "topPct": 87.0, "percentile": 13.4, "scorePct": 54.0, "lgt": 10, "country": 14, "reading": 16, "listening": 9, "sum": 49, "grade": 5, "total": 54}, {"id": "ID-214", "pos": 216, "topPct": 87.4, "percentile": 13.0, "scorePct": 54.0, "lgt": 8, "country": 10, "reading": 18, "listening": 10, "sum": 46, "grade": 8, "total": 54}, {"id": "ID-038", "pos": 217, "topPct": 87.9, "percentile": 12.6, "scorePct": 54.0, "lgt": 13, "country": 7, "reading": 15, "listening": 10, "sum": 45, "grade": 9, "total": 54}, {"id": "ID-052", "pos": 218, "topPct": 88.3, "percentile": 12.1, "scorePct": 54.0, "lgt": 11, "country": 10, "reading": 12, "listening": 9, "sum": 42, "grade": 12, "total": 54}, {"id": "ID-209", "pos": 219, "topPct": 88.7, "percentile": 11.7, "scorePct": 54.0, "lgt": 12, "country": 4, "reading": 16, "listening": 7, "sum": 39, "grade": 15, "total": 54}, {"id": "ID-071", "pos": 220, "topPct": 89.1, "percentile": 11.3, "scorePct": 53.0, "lgt": 6, "country": 11, "reading": 16, "listening": 13, "sum": 46, "grade": 7, "total": 53}, {"id": "ID-021", "pos": 221, "topPct": 89.5, "percentile": 10.9, "scorePct": 53.0, "lgt": 10, "country": 10, "reading": 16, "listening": 9, "sum": 45, "grade": 8, "total": 53}, {"id": "ID-177", "pos": 222, "topPct": 89.9, "percentile": 10.5, "scorePct": 53.0, "lgt": 8, "country": 12, "reading": 18, "listening": 6, "sum": 44, "grade": 9, "total": 53}, {"id": "ID-022", "pos": 223, "topPct": 90.3, "percentile": 10.1, "scorePct": 52.0, "lgt": 12, "country": 9, "reading": 16, "listening": 8, "sum": 45, "grade": 7, "total": 52}, {"id": "ID-142", "pos": 224, "topPct": 90.7, "percentile": 9.7, "scorePct": 52.0, "lgt": 12, "country": 3, "reading": 16, "listening": 11, "sum": 42, "grade": 10, "total": 52}, {"id": "ID-067", "pos": 225, "topPct": 91.1, "percentile": 9.3, "scorePct": 51.0, "lgt": 8, "country": 9, "reading": 16, "listening": 9, "sum": 42, "grade": 9, "total": 51}, {"id": "ID-246", "pos": 226, "topPct": 91.5, "percentile": 8.9, "scorePct": 51.0, "lgt": 9, "country": 8, "reading": 14, "listening": 10, "sum": 41, "grade": 10, "total": 51}, {"id": "ID-245", "pos": 227, "topPct": 91.9, "percentile": 8.5, "scorePct": 51.0, "lgt": 7, "country": 12, "reading": 15, "listening": 7, "sum": 41, "grade": 10, "total": 51}, {"id": "ID-026", "pos": 228, "topPct": 92.3, "percentile": 8.1, "scorePct": 50.0, "lgt": 9, "country": 10, "reading": 17, "listening": 6, "sum": 42, "grade": 8, "total": 50}, {"id": "ID-200", "pos": 229, "topPct": 92.7, "percentile": 7.7, "scorePct": 50.0, "lgt": 12, "country": 5, "reading": 15, "listening": 9, "sum": 41, "grade": 9, "total": 50}, {"id": "ID-028", "pos": 230, "topPct": 93.1, "percentile": 7.3, "scorePct": 50.0, "lgt": 10, "country": 8, "reading": 17, "listening": 5, "sum": 40, "grade": 10, "total": 50}, {"id": "ID-121", "pos": 231, "topPct": 93.5, "percentile": 6.9, "scorePct": 50.0, "lgt": 10, "country": 5, "reading": 15, "listening": 9, "sum": 39, "grade": 11, "total": 50}, {"id": "ID-238", "pos": 232, "topPct": 93.9, "percentile": 6.5, "scorePct": 49.0, "lgt": 4, "country": 9, "reading": 17, "listening": 12, "sum": 42, "grade": 7, "total": 49}, {"id": "ID-122", "pos": 233, "topPct": 94.3, "percentile": 6.1, "scorePct": 49.0, "lgt": 10, "country": 6, "reading": 15, "listening": 8, "sum": 39, "grade": 10, "total": 49}, {"id": "ID-124", "pos": 234, "topPct": 94.7, "percentile": 5.7, "scorePct": 48.0, "lgt": 12, "country": 10, "reading": 13, "listening": 7, "sum": 42, "grade": 6, "total": 48}, {"id": "ID-153", "pos": 235, "topPct": 95.1, "percentile": 5.3, "scorePct": 48.0, "lgt": 12, "country": 7, "reading": 11, "listening": 7, "sum": 37, "grade": 11, "total": 48}, {"id": "ID-201", "pos": 236, "topPct": 95.5, "percentile": 4.9, "scorePct": 47.0, "lgt": 1, "country": 12, "reading": 16, "listening": 9, "sum": 38, "grade": 9, "total": 47}, {"id": "ID-229", "pos": 237, "topPct": 96.0, "percentile": 4.5, "scorePct": 45.0, "lgt": 7, "country": 8, "reading": 15, "listening": 9, "sum": 39, "grade": 6, "total": 45}, {"id": "ID-074", "pos": 238, "topPct": 96.4, "percentile": 4.0, "scorePct": 45.0, "lgt": 4, "country": 10, "reading": 13, "listening": 9, "sum": 36, "grade": 9, "total": 45}, {"id": "ID-090", "pos": 239, "topPct": 96.8, "percentile": 3.6, "scorePct": 44.0, "lgt": 6, "country": 8, "reading": 16, "listening": 7, "sum": 37, "grade": 7, "total": 44}, {"id": "ID-202", "pos": 240, "topPct": 97.2, "percentile": 3.2, "scorePct": 44.0, "lgt": 4, "country": 7, "reading": 17, "listening": 8, "sum": 36, "grade": 8, "total": 44}, {"id": "ID-215", "pos": 241, "topPct": 97.6, "percentile": 2.8, "scorePct": 44.0, "lgt": 4, "country": 8, "reading": 16, "listening": 6, "sum": 34, "grade": 10, "total": 44}, {"id": "ID-051", "pos": 242, "topPct": 98.0, "percentile": 2.4, "scorePct": 42.0, "lgt": 8, "country": 9, "reading": 15, "listening": 6, "sum": 38, "grade": 4, "total": 42}, {"id": "ID-010", "pos": 243, "topPct": 98.4, "percentile": 2.0, "scorePct": 42.0, "lgt": 7, "country": 10, "reading": 11, "listening": 7, "sum": 35, "grade": 7, "total": 42}, {"id": "ID-203", "pos": 244, "topPct": 98.8, "percentile": 1.6, "scorePct": 38.0, "lgt": 6, "country": 7, "reading": 15, "listening": 9, "sum": 37, "grade": 1, "total": 38}, {"id": "ID-064", "pos": 245, "topPct": 99.2, "percentile": 1.2, "scorePct": 35.0, "lgt": 4, "country": 6, "reading": 14, "listening": 6, "sum": 30, "grade": 5, "total": 35}, {"id": "ID-188", "pos": 246, "topPct": 99.6, "percentile": 0.8, "scorePct": 34.0, "lgt": 1, "country": 8, "reading": 11, "listening": 7, "sum": 27, "grade": 7, "total": 34}, {"id": "ID-183", "pos": 247, "topPct": 100.0, "percentile": 0.4, "scorePct": 34.0, "lgt": 3, "country": 5, "reading": 11, "listening": 6, "sum": 25, "grade": 9, "total": 34}];
-    const stats = {"count": 247, "max": 86, "avg": 64.4, "median": 65.0, "thresholds": [{"pct": 1, "count": 3, "score": 85}, {"pct": 5, "count": 13, "score": 78}, {"pct": 10, "count": 25, "score": 76}, {"pct": 25, "count": 62, "score": 71}, {"pct": 50, "count": 124, "score": 65}]};
-    const distribution = [{"score": 34, "count": 2}, {"score": 35, "count": 1}, {"score": 38, "count": 1}, {"score": 42, "count": 2}, {"score": 44, "count": 3}, {"score": 45, "count": 2}, {"score": 47, "count": 1}, {"score": 48, "count": 2}, {"score": 49, "count": 2}, {"score": 50, "count": 4}, {"score": 51, "count": 3}, {"score": 52, "count": 2}, {"score": 53, "count": 3}, {"score": 54, "count": 5}, {"score": 55, "count": 5}, {"score": 56, "count": 4}, {"score": 57, "count": 9}, {"score": 58, "count": 7}, {"score": 59, "count": 12}, {"score": 60, "count": 10}, {"score": 61, "count": 6}, {"score": 62, "count": 10}, {"score": 63, "count": 11}, {"score": 64, "count": 16}, {"score": 65, "count": 7}, {"score": 66, "count": 8}, {"score": 67, "count": 13}, {"score": 68, "count": 9}, {"score": 69, "count": 9}, {"score": 70, "count": 12}, {"score": 71, "count": 14}, {"score": 72, "count": 6}, {"score": 73, "count": 3}, {"score": 74, "count": 8}, {"score": 75, "count": 5}, {"score": 76, "count": 7}, {"score": 77, "count": 6}, {"score": 78, "count": 5}, {"score": 79, "count": 4}, {"score": 80, "count": 1}, {"score": 81, "count": 1}, {"score": 82, "count": 2}, {"score": 83, "count": 1}, {"score": 85, "count": 2}, {"score": 86, "count": 1}];
+    // Исходные сырые данные (включая добавленный Устный тур)
+    const rawCSV = `
+ID-224,18,18,19,13,68,18,86,23
+ID-006,17,18,18,13,66,19,85,24
+ID-244,20,16,20,13,69,16,85,24
+ID-204,18,12,20,14,64,19,83,25
+ID-145,18,15,18,14,65,17,82,23
+ID-191,17,17,20,12,66,16,82,24
+ID-009,17,11,19,15,62,19,81,25
+ID-060,15,18,18,14,65,15,80,19
+ID-159,19,14,17,14,64,15,79,23
+ID-206,19,11,20,14,64,15,79,25
+ID-212,19,15,18,14,66,13,79,24
+ID-109,16,18,15,13,62,17,79,23
+ID-147,17,11,18,14,60,18,78,21
+ID-170,16,13,20,14,63,15,78,15
+ID-086,19,15,20,11,65,13,78,21
+ID-084,16,14,19,13,62,16,78,24
+ID-096,18,10,17,14,59,19,78,25
+ID-045,17,14,17,11,59,18,77,22
+ID-070,14,17,18,11,60,17,77,24
+ID-093,17,16,17,13,63,14,77,22
+ID-043,19,13,18,15,65,12,77,25
+ID-105,17,12,19,13,61,16,77,22
+ID-013,14,16,17,13,60,17,77,23
+ID-034,15,16,19,13,63,13,76,18
+ID-104,13,16,20,12,61,15,76,23
+ID-089,15,16,19,12,62,14,76,19
+ID-081,15,12,18,15,60,16,76,24
+ID-029,15,13,17,14,59,17,76,23
+ID-123,16,13,19,13,61,15,76,24
+ID-008,15,16,18,13,62,14,76,22
+ID-178,18,10,19,15,62,13,75,23
+ID-242,16,11,19,12,58,17,75,22
+ID-088,15,15,17,14,61,14,75,23
+ID-152,15,11,20,13,59,16,75,24
+ID-031,16,9,18,12,55,20,75,23
+ID-141,15,18,16,14,63,11,74,19
+ID-102,17,14,19,13,63,11,74,24
+ID-079,14,19,16,11,60,14,74,17
+ID-108,15,14,19,13,61,13,74,20
+ID-164,14,13,20,12,59,15,74,21
+ID-243,13,14,18,10,55,19,74,22
+ID-182,18,11,19,14,62,12,74,20
+ID-187,17,14,16,14,61,13,74,24
+ID-110,15,17,17,13,62,11,73,18
+ID-036,14,18,18,14,64,9,73,24
+ID-205,17,15,20,10,62,11,73,25
+ID-065,12,17,18,12,59,13,72,21
+ID-003,17,13,19,14,63,9,72,20
+ID-240,13,15,18,15,61,11,72,20
+ID-087,18,8,18,14,58,14,72,24
+ID-151,13,18,18,12,61,11,72,22
+ID-195,17,10,17,14,58,14,72,23
+ID-116,18,13,19,10,60,11,71,19
+ID-113,15,19,17,11,62,9,71,20
+ID-112,13,15,17,12,57,14,71,20
+ID-213,18,12,17,12,59,12,71,22
+ID-075,13,13,20,11,57,14,71,22
+ID-062,17,16,20,12,65,6,71,23
+ID-083,18,14,19,11,62,9,71,24
+ID-085,6,20,14,15,55,16,71,22
+ID-233,16,9,17,12,54,17,71,21
+ID-247,16,14,18,14,62,9,71,24
+ID-046,10,17,16,15,58,13,71,20
+ID-136,16,15,19,11,61,10,71,17
+ID-144,15,16,18,12,61,10,71,20
+ID-189,17,14,16,13,60,11,71,22
+ID-063,12,17,17,11,57,13,70,23
+ID-223,15,16,17,11,59,11,70,24
+ID-039,16,17,17,12,62,8,70,23
+ID-160,18,12,18,10,58,12,70,24
+ID-234,16,10,16,12,54,16,70,24
+ID-012,15,12,16,13,56,14,70,17
+ID-230,15,14,19,13,61,9,70,24
+ID-131,14,14,16,11,55,15,70,21
+ID-225,15,16,20,10,61,9,70,21
+ID-168,14,12,19,11,56,14,70,22
+ID-222,16,13,16,10,55,15,70,18
+ID-166,10,12,18,11,51,19,70,25
+ID-184,11,15,19,10,55,14,69,23
+ID-044,13,15,16,12,56,13,69,22
+ID-092,11,17,19,10,57,12,69,23
+ID-154,14,12,19,11,56,13,69,19
+ID-097,14,10,17,13,54,15,69,23
+ID-158,8,18,17,15,58,11,69,20
+ID-069,16,12,18,11,57,12,69,24
+ID-207,11,11,17,14,53,16,69,22
+ID-068,11,12,18,12,53,16,69,21
+ID-133,12,10,19,11,52,16,68,23
+ID-138,19,7,19,12,57,11,68,23
+ID-125,17,7,18,11,53,15,68,23
+ID-103,15,15,18,12,60,8,68,23
+ID-231,13,12,17,12,54,14,68,22
+ID-228,16,6,19,13,54,14,68,25
+ID-001,15,12,17,8,52,16,68,25
+ID-072,16,11,19,10,56,12,68,23
+ID-076,16,8,19,13,56,12,68,21
+ID-193,16,11,18,13,58,9,67,23
+ID-155,12,16,18,11,57,10,67,19
+ID-040,12,12,17,10,51,16,67,23
+ID-120,14,9,18,15,56,11,67,23
+ID-014,16,14,15,12,57,10,67,23
+ID-066,11,13,18,9,51,16,67,18
+ID-119,9,11,18,14,52,15,67,22
+ID-129,14,12,17,11,54,13,67,25
+ID-005,13,11,18,11,53,14,67,25
+ID-101,13,14,18,10,55,12,67,21
+ID-037,16,10,17,11,54,13,67,15
+ID-058,11,14,19,14,58,9,67,15
+ID-148,13,12,20,9,54,13,67,20
+ID-115,13,13,18,12,56,10,66,18
+ID-126,14,7,18,14,53,13,66,25
+ID-061,15,14,14,10,53,13,66,24
+ID-208,13,12,19,12,56,10,66,22
+ID-054,11,9,17,13,50,16,66,22
+ID-173,19,9,17,9,54,12,66,23
+ID-041,11,13,15,11,50,16,66,18
+ID-226,10,16,17,11,54,12,66,20
+ID-057,15,11,18,12,56,9,65,22
+ID-056,10,14,17,11,52,13,65,21
+ID-174,10,15,19,10,54,11,65,22
+ID-030,15,11,16,11,53,12,65,24
+ID-002,10,8,18,13,49,16,65,23
+ID-192,13,15,17,11,56,9,65,23
+ID-135,12,9,18,11,50,15,65,22
+ID-186,11,13,18,11,53,11,64,20
+ID-132,9,14,18,10,51,13,64,20
+ID-033,9,15,18,12,54,10,64,24
+ID-196,14,10,17,11,52,12,64,21
+ID-219,15,16,16,10,57,7,64,16
+ID-016,13,10,18,13,54,10,64,18
+ID-100,9,16,16,11,52,12,64,22
+ID-165,12,10,17,10,49,15,64,19
+ID-015,15,11,17,11,54,10,64,20
+ID-180,12,12,13,14,51,13,64,24
+ID-053,10,12,17,13,52,12,64,21
+ID-127,14,8,18,14,54,10,64,24
+ID-157,17,10,19,11,57,7,64,21
+ID-235,18,10,17,10,55,9,64,23
+ID-239,13,8,16,12,49,15,64,23
+ID-049,15,8,18,9,50,14,64,14
+ID-050,8,16,18,11,53,10,63,17
+ID-055,18,11,15,8,52,11,63,22
+ID-130,12,9,20,10,51,12,63,19
+ID-140,12,12,17,10,51,12,63,23
+ID-078,14,11,17,6,48,15,63,22
+ID-024,18,7,18,11,54,9,63,25
+ID-035,13,12,15,13,53,10,63,20
+ID-011,14,11,18,11,54,9,63,19
+ID-025,11,14,16,8,49,14,63,20
+ID-099,12,16,18,11,57,6,63,20
+ID-227,12,11,18,11,52,11,63,22
+ID-004,12,15,16,11,54,8,62,22
+ID-162,11,19,18,9,57,5,62,21
+ID-220,7,17,18,10,52,10,62,19
+ID-194,13,10,17,7,47,15,62,21
+ID-080,15,8,17,11,51,11,62,17
+ID-020,10,13,16,11,50,12,62,22
+ID-073,16,7,18,13,54,8,62,21
+ID-032,15,8,18,10,51,11,62,21
+ID-210,17,11,17,10,55,7,62,24
+ID-217,10,13,16,12,51,11,62,24
+ID-190,10,12,15,14,51,10,61,20
+ID-172,12,8,16,11,47,14,61,20
+ID-179,14,6,19,10,49,12,61,21
+ID-198,12,7,16,12,47,14,61,19
+ID-236,12,12,16,13,53,8,61,23
+ID-150,11,14,18,12,55,6,61,14
+ID-218,10,9,17,10,46,14,60,23
+ID-149,11,10,16,12,49,11,60,25
+ID-117,16,13,16,11,56,4,60,20
+ID-107,10,9,18,11,48,12,60,18
+ID-232,10,8,19,11,48,12,60,23
+ID-181,13,10,17,9,49,11,60,21
+ID-143,15,7,18,11,51,9,60,21
+ID-111,13,13,17,13,56,4,60,20
+ID-199,15,5,17,11,48,12,60,24
+ID-023,15,13,16,12,56,4,60,20
+ID-027,7,12,16,10,45,14,59,17
+ID-175,13,6,18,11,48,11,59,18
+ID-241,11,8,16,13,48,11,59,20
+ID-098,13,11,17,9,50,9,59,24
+ID-019,16,10,15,7,48,11,59,24
+ID-106,14,8,18,8,48,11,59,18
+ID-059,10,11,16,9,46,13,59,21
+ID-185,13,11,19,9,52,7,59,21
+ID-197,9,12,18,9,48,11,59,24
+ID-216,8,13,17,10,48,11,59,19
+ID-163,13,7,18,9,47,12,59,21
+ID-077,9,12,16,8,45,14,59,19
+ID-017,9,14,17,10,50,8,58,23
+ID-237,10,12,16,8,46,12,58,22
+ID-118,12,14,17,5,48,10,58,22
+ID-047,13,7,19,11,50,8,58,24
+ID-146,9,16,16,10,51,7,58,23
+ID-156,13,7,17,8,45,13,58,21
+ID-095,10,10,15,11,46,12,58,22
+ID-211,16,8,17,11,52,5,57,19
+ID-018,16,5,18,7,46,11,57,23
+ID-171,10,11,17,10,48,9,57,23
+ID-167,12,10,16,11,49,8,57,22
+ID-176,13,9,14,10,46,11,57,22
+ID-128,7,15,17,10,49,8,57,18
+ID-042,10,6,16,10,42,15,57,22
+ID-137,11,8,14,9,42,15,57,21
+ID-091,10,11,19,9,49,8,57,21
+ID-221,11,15,16,9,51,5,56,19
+ID-082,10,13,16,8,47,9,56,24
+ID-094,8,11,17,12,48,8,56,20
+ID-134,10,6,19,10,45,11,56,15
+ID-007,12,8,16,12,48,7,55,20
+ID-169,11,7,16,9,43,12,55,23
+ID-139,7,9,18,12,46,9,55,18
+ID-161,12,9,18,9,48,7,55,25
+ID-114,12,7,17,13,49,6,55,18
+ID-209,12,4,16,7,39,15,54,24
+ID-038,13,7,15,10,45,9,54,25
+ID-052,11,10,12,9,42,12,54,24
+ID-214,8,10,18,10,46,8,54,17
+ID-048,10,14,16,9,49,5,54,23
+ID-177,8,12,18,6,44,9,53,14
+ID-071,6,11,16,13,46,7,53,17
+ID-021,10,10,16,9,45,8,53,22
+ID-022,12,9,16,8,45,7,52,23
+ID-142,12,3,16,11,42,10,52,21
+ID-067,8,9,16,9,42,9,51,17
+ID-245,7,12,15,7,41,10,51,21
+ID-246,9,8,14,10,41,10,51,16
+ID-026,9,10,17,6,42,8,50,16
+ID-028,10,8,17,5,40,10,50,20
+ID-121,10,5,15,9,39,11,50,24
+ID-200,12,5,15,9,41,9,50,22
+ID-238,4,9,17,12,42,7,49,20
+ID-122,10,6,15,8,39,10,49,18
+ID-153,12,7,11,7,37,11,48,14
+ID-124,12,10,13,7,42,6,48,22
+ID-201,1,12,16,9,38,9,47,18
+ID-229,7,8,15,9,39,6,45,10
+ID-074,4,10,13,9,36,9,45,18
+ID-215,4,8,16,6,34,10,44,21
+ID-090,6,8,16,7,37,7,44,19
+ID-202,4,7,17,8,36,8,44,22
+ID-051,8,9,15,6,38,4,42,18
+ID-010,7,10,11,7,35,7,42,22
+ID-203,6,7,15,9,37,1,38,14
+ID-064,4,6,14,6,30,5,35,21
+ID-183,3,5,11,6,25,9,34,18
+ID-188,1,8,11,7,27,7,34,15`;
 
+    // 1. Формируем массив объектов и вычисляем новый Финальный балл
+    let rowsData = rawCSV.trim().split('\n').filter(Boolean).map(line => {
+      const p = line.split(',');
+      const written = Number(p[7]);
+      const oral = Number(p[8]);
+      return {
+        id: p[0],
+        lgt: Number(p[1]),
+        country: Number(p[2]),
+        reading: Number(p[3]),
+        listening: Number(p[4]),
+        sum: Number(p[5]),
+        grade: Number(p[6]),
+        written: written,
+        oral: oral,
+        total: written + oral // Итоговый + Устный тур
+      };
+    });
+
+    // 2. Сортируем:
+    // - по убыванию финального балла
+    // - при равенстве выше тот, у кого больше устный тур
+    // - при равенстве устного тура выше тот, у кого больше балл за письмо (Оценка)
+    rowsData.sort((a, b) => {
+      if (b.total !== a.total) return b.total - a.total;
+      if (b.oral !== a.oral) return b.oral - a.oral;
+      if (b.grade !== a.grade) return b.grade - a.grade;
+      return 0;
+    });
+
+    // 3. Вычисляем рейтинги, проценты и собираем статистику
+    const N = rowsData.length;
+    let sumTotal = 0;
+    let currentRank = 1;
+
+    rowsData.forEach((r, i) => {
+      // Честная раздача мест (разделение при идентичных показателях тай-брейка)
+      if (i > 0) {
+        const prev = rowsData[i - 1];
+        if (r.total < prev.total || r.oral < prev.oral || r.grade < prev.grade) {
+          currentRank = i + 1;
+        }
+      }
+      r.pos = currentRank;
+      r.topPct = (currentRank / N * 100);
+      r.percentile = ((N - currentRank + 1) / N * 100);
+      r.scorePct = (r.total / 125 * 100); // макс. балл теперь 100 + 25 = 125
+      sumTotal += r.total;
+    });
+
+    const rows = rowsData;
+
+    // Генерируем сводную статистику
+    const stats = {
+      count: N,
+      max: rows[0].total,
+      avg: sumTotal / N,
+      median: rows[Math.floor(N / 2)].total,
+      thresholds: [
+        { pct: 1, count: Math.ceil(N * 0.01) },
+        { pct: 5, count: Math.ceil(N * 0.05) },
+        { pct: 10, count: Math.ceil(N * 0.10) },
+        { pct: 25, count: Math.ceil(N * 0.25) },
+        { pct: 50, count: Math.ceil(N * 0.50) }
+      ]
+    };
+    stats.thresholds.forEach(t => {
+      t.score = rows[t.count - 1]?.total || 0;
+    });
+
+    // Генерируем распределение баллов
+    const distMap = {};
+    rows.forEach(r => distMap[r.total] = (distMap[r.total] || 0) + 1);
+    const distribution = Object.entries(distMap)
+      .map(([score, count]) => ({ score: Number(score), count }))
+      .sort((a, b) => a.score - b.score);
+
+    // ==========================================
+    // Логика UI
+    // ==========================================
     const idInput = document.getElementById('idInput');
     const idList = document.getElementById('idList');
     const findBtn = document.getElementById('findBtn');
@@ -608,6 +936,8 @@
           <td>${r.listening}</td>
           <td>${r.sum}</td>
           <td>${r.grade}</td>
+          <td class="muted">${r.written}</td>
+          <td>${r.oral}</td>
           <td><span class="score-pill">${r.total}</span></td>
         </tr>
       `).join('');
@@ -620,13 +950,12 @@
       }
     }
 
-    function getTopBucket(pos) {
-      const pct = pos / rows.length * 100;
-      if (pct <= 1) return 'Это уровень топ-1%.';
-      if (pct <= 5) return 'Это уровень топ-5%.';
-      if (pct <= 10) return 'Это уровень топ-10%.';
-      if (pct <= 25) return 'Это уровень топ-25%.';
-      if (pct <= 50) return 'Это выше средней половины таблицы.';
+    function getTopBucket(topPct) {
+      if (topPct <= 1) return 'Это уровень топ-1%.';
+      if (topPct <= 5) return 'Это уровень топ-5%.';
+      if (topPct <= 10) return 'Это уровень топ-10%.';
+      if (topPct <= 25) return 'Это уровень топ-25%.';
+      if (topPct <= 50) return 'Это выше средней половины таблицы.';
       return 'Это нижняя половина таблицы.';
     }
 
@@ -651,7 +980,7 @@
       document.getElementById('resPos').textContent = `#${item.pos}`;
       document.getElementById('resPosSub').textContent = `из ${rows.length} участников`;
       document.getElementById('resTop').textContent = `${fmt(item.topPct)}%`;
-      document.getElementById('resTotal').textContent = `${item.total} / 100`;
+      document.getElementById('resTotal').textContent = `${item.total} / 125`;
       document.getElementById('resPercentile').textContent = `лучше, чем примерно ${fmt(item.percentile)}% участников`;
 
       const bars = [
@@ -659,7 +988,8 @@
         ['Страноведение', item.country, 20],
         ['Чтение', item.reading, 20],
         ['Аудирование', item.listening, 20],
-        ['Оценка', item.grade, 20]
+        ['Оценка', item.grade, 20],
+        ['Устный тур', item.oral, 25]
       ];
 
       document.getElementById('bars').innerHTML = bars.map(([name, value, max]) => {
@@ -678,7 +1008,7 @@
       }).join('');
 
       document.getElementById('resHint').textContent =
-        `${getTopBucket(item.pos)} Балл от максимума: ${fmt(item.scorePct)}%.`;
+        `${getTopBucket(item.topPct)} Балл от возможного максимума: ${fmt(item.scorePct)}%.`;
 
       renderTable();
     }
