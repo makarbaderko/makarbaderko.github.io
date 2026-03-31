@@ -1,0 +1,495 @@
+doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Рейтинг по всем ID</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: #121933;
+      --panel-2: #192347;
+      --text: #    :root {
+;
+      --muted: #aab4d6;
+      --line: rgba(255,255,255,.10);
+      --accent: #72e0a8;
+      --accent-2: #7fb5ff;
+      --warn: #ffd479;
+      --shadow: 0 12px 30px rgba(0,0,0,.25);
+      --radius: 18px;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background:
+      radial-gradient(circle at top right, rgba(127,181,255,.13), transparent 25%),
+      radial-gradient(circle at top left, rgba(114,224,168,.10), transparent 20%),
+      var(--bg);
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    .container {
+      width: min(1280px, calc(100vw - 32px));
+      margin: 28px auto 48px;
+    }
+    .hero {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: 1.2fr .8fr;
+      align-items: stretch;
+    }
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .hero-main {
+      padding: 28px;
+    }
+    .hero-main h1 {
+      margin: 0 0 10px;
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1.05;
+      letter-spacing: -.03em;
+    }
+    .hero-main p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.55;
+      max-width: 70ch;
+    }
+    .hero-side {
+      padding: 20px;
+      display: grid;
+      gap: 12px;
+      align-content: start;
+    }
+    .side-title {
+      font-size: 14px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    .mini {
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+    }
+    .mini .k {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+    .mini .v {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -.03em;
+    }
+    .section {
+      margin-top: 18px;
+      padding: 20px;
+    }
+    .section h2 {
+      margin: 0 0 14px;
+      font-size: 20px;
+      letter-spacing: -.02em;
+    }
+    .search-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 10px;
+      align-items: center;
+    }
+    input[type="text"] {
+      width: 100%;
+      height: 48px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      outline: none;
+      background: rgba(255,255,255,.05);
+      color: var(--text);
+      padding: 0 14px;
+      font-size: 16px;
+    }
+    .btn {
+      height: 48px;
+      border: 0;
+      border-radius: 14px;
+      padding: 0 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .08s ease, opacity .2s ease;
+    }
+    .btn:active { transform: translateY(1px); }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #4dd0e1);
+      color: #06261a;
+    }
+    .btn-secondary {
+      background: rgba(255,255,255,.08);
+      color: var(--text);
+      border: 1px solid var(--line);
+    }
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .result-card {
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px;
+      min-height: 96px;
+    }
+    .result-card .label {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+    .result-card .value {
+      font-weight: 800;
+      font-size: 28px;
+      letter-spacing: -.03em;
+    }
+    .result-card .sub {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 6px;
+    }
+    .bars {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+    .bar-card {
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px;
+    }
+    .bar-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+    .bar-track {
+      width: 100%;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.08);
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent-2), var(--accent));
+    }
+    .hint {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 12px;
+    }
+    .thresholds {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .threshold {
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+    }
+    .threshold .t1 {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 6px;
+    }
+    .threshold .t2 {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -.03em;
+    }
+    .threshold .t3 {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+    .table-tools {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.05);
+      padding: 9px 12px;
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .table-wrap {
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      max-height: 70vh;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 980px;
+      background: rgba(5, 8, 18, .22);
+    }
+    thead th {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: #121933;
+      color: var(--text);
+      text-align: left;
+      padding: 14px 12px;
+      border-bottom: 1px solid var(--line);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+    }
+    tbody td {
+      padding: 12px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      color: #e7ecff;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+    tbody tr:hover {
+      background: rgba(127,181,255,.07);
+    }
+    tbody tr.active {
+      background: rgba(114,224,168,.13);
+      outline: 1px solid rgba(114,224,168,.35);
+    }
+    .score-pill {
+      display: inline-block;
+      min-width: 58px;
+      text-align: center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-weight: 800;
+      background: rgba(114,224,168,.14);
+      color: #c9ffe4;
+      border: 1px solid rgba(114,224,168,.25);
+    }
+    .muted {
+      color: var(--muted);
+    }
+    .dist {
+      display: grid;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .dist-row {
+      display: grid;
+      grid-template-columns: 52px 1fr 40px;
+      gap: 10px;
+      align-items: center;
+      font-size: 13px;
+    }
+    .dist-track {
+      height: 8px;
+      background: rgba(255,255,255,.08);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .dist-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--warn), var(--accent));
+      border-radius: 999px;
+    }
+    .footer-note {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+    @media (max-width: 980px) {
+      .hero, .search-row, .table-tools {
+        grid-template-columns: 1fr;
+      }
+      .result-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .bars, .thresholds {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 640px) {
+      .container {
+        width: min(100vw - 20px, 1280px);
+        margin: 18px auto 32px;
+      }
+      .hero-main, .hero-side, .section {
+        padding: 16px;
+      }
+      .result-grid {
+        grid-template-columns: 1fr;
+      }
+      .mini-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .mini .v {
+        font-size: 24px;
+      }
+      .result-card .value {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="hero">
+      <section class="card hero-main">
+        <h1>Рейтинг по всем ID</h1>
+        <p>
+          Автономная страница на реальных данных из CSV. Здесь можно найти любой ID,
+          сразу увидеть место в общем рейтинге, попасть ли в топ по процентам,
+          а ниже — посмотреть полную отсортированную таблицу результатов.
+        </p>
+      </section>
+
+      <aside class="card hero-side">
+        <div class="side-title">Общая сводка</div>
+        <div class="mini-grid">
+          <div class="mini">
+            <div class="k">Участников</div>
+            <div class="v" id="statCount">—</div>
+          </div>
+          <div class="mini">
+            <div class="k">Макс. балл</div>
+            <div class="v" id="statMax">—</div>
+          </div>
+          <div class="mini">
+            <div class="k">Средний балл</div>
+            <div class="v" id="statAvg">—</div>
+          </div>
+          <div class="mini">
+            <div class="k">Медиана</div>
+            <div class="v" id="statMedian">—</div>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <section class="card section">
+      <h2>Найти свой ID</h2>
+      <div class="search-row">
+        <input id="idInput" type="text" placeholder="Например: 224 или ID-224" list="idList" />
+        <button class="btn btn-primary" id="findBtn">Показать результат</button>
+        <button class="btn btn-secondary" id="clearBtn">Сбросить</button>
+      </div>
+      <datalist id="idList"></datalist>
+
+      <div id="resultBox" style="display:none;">
+        <div class="result-grid">
+          <div class="result-card">
+            <div class="label">ID</div>
+            <div class="value" id="resId">—</div>
+            <div class="sub">найденный участник</div>
+          </div>
+          <div class="result-card">
+            <div class="label">Место</div>
+            <div class="value" id="resPos">—</div>
+            <div class="sub" id="resPosSub">—</div>
+          </div>
+          <div class="result-card">
+            <div class="label">Топ</div>
+            <div class="value" id="resTop">—</div>
+            <div class="sub">чем меньше процент, тем выше место</div>
+          </div>
+          <div class="result-card">
+            <div class="label">Итоговый балл</div>
+            <div class="value" id="resTotal">—</div>
+            <div class="sub" id="resPercentile">—</div>
+          </div>
+        </div>
+
+        <div class="bars" id="bars"></div>
+        <div class="hint" id="resHint"></div>
+      </div>
+
+      <div id="notFound" class="hint" style="display:none; color:#ffb7b7;">
+        Такой ID не найден. Проверьте формат и попробуйте ещё раз.
+      </div>
+    </section>
+
+    <section class="card section">
+      <h2>Пороги по топам</h2>
+      <div class="thresholds" id="thresholds"></div>
+      <div class="footer-note">
+        Порог показывает минимальный итоговый балл, с которым можно попасть в соответствующий диапазон верхней части таблицы.
+      </div>
+    </section>
+
+    <section class="card section">
+      <h2>Распределение итоговых баллов</h2>
+      <div class="dist" id="distribution"></div>
+    </section>
+
+    <section class="card section">
+      <h2>Полная таблица результатов</h2>
+      <div class="table-tools">
+        <input id="tableFilter" type="text" placeholder="Фильтр по ID или числам…" />
+        <div class="badge">
+          <span id="rowsCount">0</span>
+          <span>строк показано</span>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th data-key="pos">Место</th>
+              <th data-key="id">ID</th>
+              <th data-key="topPct">Топ %</th>
+              <th data-key="lgt">ЛГТ</th>
+              <th data-key="country">Страноведение</th>
+              <th data-key="reading">Чтение</th>
+              <th data-key="listening">Аудирование</th>
+              <th data-key="sum">Сумма</th>
+              <th data-key="grade">Оценка</th>
+              <th data-key="total">Итоговый балл</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+      <div class="footer-note">
+        Таблица изначально отсортирована по итоговому баллу по убыванию. По заголовкам можно пересортировать.
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const rows = [{"id": "ID-224", "pos": 1, "topPct": 0.4, "percentile": 100.0, "scorePct": 86.0, "lgt": 18, "country": 18, "reading": 19, "listening": 13, "sum": 68, "grade": 18, "total": 86}, {"id": "ID-244", "pos": 2, "topPct": 0.8, "percentile": 99.6, "scorePct": 85.0, "lgt": 20, "country": 16, "reading": 20, "listening": 13, "sum": 69, "grade": 16, "total": 85}, {"id": "ID-006", "pos": 3, "topPct": 1.2, "percentile": 99.2, "scorePct": 85.0, "lgt": 17, "country": 18, "reading": 18, "listening": 13, "sum": 66, "grade": 19, "total": 85}, {"id": "ID-204", "pos": 4, "topPct": 1.6, "percentile": 98.8, "scorePct": 83.0, "lgt": 18, "country": 12, "reading": 20, "listening": 14, "sum": 64, "grade": 19, "total": 83}, {"id": "ID-191", "pos": 5, "topPct": 2.0, "percentile": 98.4, "scorePct": 82.0, "lgt": 17, "country": 17, "reading": 20, "listening": 12, "sum": 66, "grade": 16, "total": 82}, {"id": "ID-145", "pos": 6, "topPct": 2.4, "percentile": 98.0, "scorePct": 82.0, "lgt": 18, "country": 15, "reading": 18, "listening": 14, "sum": 65, "grade": 17, "total": 82}, {"id": "ID-009", "pos": 7, "topPct": 2.8, "percentile": 97.6, "scorePct": 81.0, "lgt": 17, "country": 11, "reading": 19, "listening": 15, "sum": 62, "grade": 19, "total": 81}, {"id": "ID-060", "pos": 8, "topPct": 3.2, "percentile": 97.2, "scorePct": 80.0, "lgt": 15, "country": 18, "reading": 18, "listening": 14, "sum": 65, "grade": 15, "total": 80}, {"id": "ID-212", "pos": 9, "topPct": 3.6, "percentile": 96.8, "scorePct": 79.0, "lgt": 19, "country": 15, "reading": 18, "listening": 14, "sum": 66, "grade": 13, "total": 79}, {"id": "ID-159", "pos": 10, "topPct": 4.0, "percentile": 96.4, "scorePct": 79.0, "lgt": 19, "country": 14, "reading": 17, "listening": 14, "sum": 64, "grade": 15, "total": 79}, {"id": "ID-206", "pos": 11, "topPct": 4.5, "percentile": 96.0, "scorePct": 79.0, "lgt": 19, "country": 11, "reading": 20, "listening": 14, "sum": 64, "grade": 15, "total": 79}, {"id": "ID-109", "pos": 12, "topPct": 4.9, "percentile": 95.5, "scorePct": 79.0, "lgt": 16, "country": 18, "reading": 15, "listening": 13, "sum": 62, "grade": 17, "total": 79}, {"id": "ID-086", "pos": 13, "topPct": 5.3, "percentile": 95.1, "scorePct": 78.0, "lgt": 19, "country": 15, "reading": 20, "listening": 11, "sum": 65, "grade": 13, "total": 78}, {"id": "ID-170", "pos": 14, "topPct": 5.7, "percentile": 94.7, "scorePct": 78.0, "lgt": 16, "country": 13, "reading": 20, "listening": 14, "sum": 63, "grade": 15, "total": 78}, {"id": "ID-084", "pos": 15, "topPct": 6.1, "percentile": 94.3, "scorePct": 78.0, "lgt": 16, "country": 14, "reading": 19, "listening": 13, "sum": 62, "grade": 16, "total": 78}, {"id": "ID-147", "pos": 16, "topPct": 6.5, "percentile": 93.9, "scorePct": 78.0, "lgt": 17, "country": 11, "reading": 18, "listening": 14, "sum": 60, "grade": 18, "total": 78}, {"id": "ID-096", "pos": 17, "topPct": 6.9, "percentile": 93.5, "scorePct": 78.0, "lgt": 18, "country": 10, "reading": 17, "listening": 14, "sum": 59, "grade": 19, "total": 78}, {"id": "ID-043", "pos": 18, "topPct": 7.3, "percentile": 93.1, "scorePct": 77.0, "lgt": 19, "country": 13, "reading": 18, "listening": 15, "sum": 65, "grade": 12, "total": 77}, {"id": "ID-093", "pos": 19, "topPct": 7.7, "percentile": 92.7, "scorePct": 77.0, "lgt": 17, "country": 16, "reading": 17, "listening": 13, "sum": 63, "grade": 14, "total": 77}, {"id": "ID-105", "pos": 20, "topPct": 8.1, "percentile": 92.3, "scorePct": 77.0, "lgt": 17, "country": 12, "reading": 19, "listening": 13, "sum": 61, "grade": 16, "total": 77}, {"id": "ID-070", "pos": 21, "topPct": 8.5, "percentile": 91.9, "scorePct": 77.0, "lgt": 14, "country": 17, "reading": 18, "listening": 11, "sum": 60, "grade": 17, "total": 77}, {"id": "ID-013", "pos": 22, "topPct": 8.9, "percentile": 91.5, "scorePct": 77.0, "lgt": 14, "country": 16, "reading": 17, "listening": 13, "sum": 60, "grade": 17, "total": 77}, {"id": "ID-045", "pos": 23, "topPct": 9.3, "percentile": 91.1, "scorePct": 77.0, "lgt": 17, "country": 14, "reading": 17, "listening": 11, "sum": 59, "grade": 18, "total": 77}, {"id": "ID-034", "pos": 24, "topPct": 9.7, "percentile": 90.7, "scorePct": 76.0, "lgt": 15, "country": 16, "reading": 19, "listening": 13, "sum": 63, "grade": 13, "total": 76}, {"id": "ID-089", "pos": 25, "topPct": 10.1, "percentile": 90.3, "scorePct": 76.0, "lgt": 15, "country": 16, "reading": 19, "listening": 12, "sum": 62, "grade": 14, "total": 76}, {"id": "ID-008", "pos": 26, "topPct": 10.5, "percentile": 89.9, "scorePct": 76.0, "lgt": 15, "country": 16, "reading": 18, "listening": 13, "sum": 62, "grade": 14, "total": 76}, {"id": "ID-123", "pos": 27, "topPct": 10.9, "percentile": 89.5, "scorePct": 76.0, "lgt": 16, "country": 13, "reading": 19, "listening": 13, "sum": 61, "grade": 15, "total": 76}, {"id": "ID-104", "pos": 28, "topPct": 11.3, "percentile": 89.1, "scorePct": 76.0, "lgt": 13, "country": 16, "reading": 20, "listening": 12, "sum": 61, "grade": 15, "total": 76}, {"id": "ID-081", "pos": 29, "topPct": 11.7, "percentile": 88.7, "scorePct": 76.0, "lgt": 15, "country": 12, "reading": 18, "listening": 15, "sum": 60, "grade": 16, "total": 76}, {"id": "ID-029", "pos": 30, "topPct": 12.1, "percentile": 88.3, "scorePct": 76.0, "lgt": 15, "country": 13, "reading": 17, "listening": 14, "sum": 59, "grade": 17, "total": 76}, {"id": "ID-178", "pos": 31, "topPct": 12.6, "percentile": 87.9, "scorePct": 75.0, "lgt": 18, "country": 10, "reading": 19, "listening": 15, "sum": 62, "grade": 13, "total": 75}, {"id": "ID-088", "pos": 32, "topPct": 13.0, "percentile": 87.4, "scorePct": 75.0, "lgt": 15, "country": 15, "reading": 17, "listening": 14, "sum": 61, "grade": 14, "total": 75}, {"id": "ID-152", "pos": 33, "topPct": 13.4, "percentile": 87.0, "scorePct": 75.0, "lgt": 15, "country": 11, "reading": 20, "listening": 13, "sum": 59, "grade": 16, "total": 75}, {"id": "ID-242", "pos": 34, "topPct": 13.8, "percentile": 86.6, "scorePct": 75.0, "lgt": 16, "country": 11, "reading": 19, "listening": 12, "sum": 58, "grade": 17, "total": 75}, {"id": "ID-031", "pos": 35, "topPct": 14.2, "percentile": 86.2, "scorePct": 75.0, "lgt": 16, "country": 9, "reading": 18, "listening": 12, "sum": 55, "grade": 20, "total": 75}, {"id": "ID-102", "pos": 36, "topPct": 14.6, "percentile": 85.8, "scorePct": 74.0, "lgt": 17, "country": 14, "reading": 19, "listening": 13, "sum": 63, "grade": 11, "total": 74}, {"id": "ID-141", "pos": 37, "topPct": 15.0, "percentile": 85.4, "scorePct": 74.0, "lgt": 15, "country": 18, "reading": 16, "listening": 14, "sum": 63, "grade": 11, "total": 74}, {"id": "ID-182", "pos": 38, "topPct": 15.4, "percentile": 85.0, "scorePct": 74.0, "lgt": 18, "country": 11, "reading": 19, "listening": 14, "sum": 62, "grade": 12, "total": 74}, {"id": "ID-187", "pos": 39, "topPct": 15.8, "percentile": 84.6, "scorePct": 74.0, "lgt": 17, "country": 14, "reading": 16, "listening": 14, "sum": 61, "grade": 13, "total": 74}, {"id": "ID-108", "pos": 40, "topPct": 16.2, "p
