@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { FaTelegram, FaWhatsapp, FaFileAlt } from 'react-icons/fa';
+import { FaTelegram, FaWhatsapp, FaFileAlt, FaLinkedin } from 'react-icons/fa';
 import { MdEmail } from 'react-icons/md';
 
 export default function Home() {
@@ -55,6 +55,9 @@ export default function Home() {
 
             {/* Social Links */}
             <div className="flex justify-center space-x-6">
+              <Link href="https://www.linkedin.com/in/mbaderko/" className="text-[#34495e] hover:text-[#2c3e50] transition-colors">
+                <FaLinkedin className="w-8 h-8" />
+              </Link>
               <Link href="https://t.me/makarbaderko" className="text-[#34495e] hover:text-[#2c3e50] transition-colors">
                 <FaTelegram className="w-8 h-8" />
               </Link>
