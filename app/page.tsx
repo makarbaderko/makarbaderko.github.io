@@ -73,23 +73,25 @@ export default function Home() {
           {/* Main Content */}
           <div className="prose prose-lg max-w-none">
             <p className="text-[#34495e]">
-              I'm a Software Engineer specializing in Data Science and Machine Learning.
+              I’m a 17-year-old software engineer and AI researcher with an interdisciplinary background in mathematics,
+              computer science, economics, and physics. My work focuses on machine learning and data-driven modeling.
             </p>
             <p className="text-[#34495e]">
-              I mostly write code in Python and C++, however I'm also familiar with languages like C and JavaScript. 
-              I work with Scikit-learn, Gradient Boosting, Tensorflow, Pytorch, Pandas, Matplotlib, Git, Docker, SQL, 
-              Arduino, Fusion 360, LATEX and many other tools.
+              I have earned national and international recognition across AI, data science, physics, mathematics and economics, 
+              including Kaggle Competitions Expert status, top placements in major AI and machine learning contests, 
+              and research presentations at international ML conferences. 
             </p>
             <p className="text-[#34495e]">
-              I study foreign languages as a hobby. I have a C1 level in English (certified), and I approximate my 
-              German level as B1, however it has not yet been proved by any certificate. Recently, I've started 
-              learning Italian.
+              I am a native Russian speaker with C1-level English and B2-level German proficiency.
+            </p>
+            <p className='text-[#34495e]'>
+              Currently I am a senior high school physics major at the School of the Centre for Teaching Excellence (country's top-ranked STEM school)
             </p>
             <p className="text-[#34495e]">
-              More detailed information about my skills and achievements can be found in my résumé.
+              More detailed information about my skills and achievements can be found in my résumé and CV.
             </p>
             <p className="text-sm text-[#5f6c7b] mt-8">
-              Last updated on July 10, 2025
+              Last updated on April 14, 2026
             </p>
           </div>
         </div>
