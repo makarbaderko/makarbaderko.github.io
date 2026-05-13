@@ -78,7 +78,7 @@ export default function Home() {
             </p>
             <p className="text-[#34495e]">
               I have earned national and international recognition across AI, data science, physics, mathematics and economics, 
-              including Kaggle Competitions Expert status, top placements in major AI and machine learning contests, 
+              including Kaggle Competitions Master status, top placements in major AI and machine learning contests, 
               and research presentations at international ML conferences. 
             </p>
             <p className="text-[#34495e]">
@@ -91,7 +91,7 @@ export default function Home() {
               More detailed information about my skills and achievements can be found in my résumé and CV.
             </p>
             <p className="text-sm text-[#5f6c7b] mt-8">
-              Last updated on April 14, 2026
+              Last updated on May 12, 2026
             </p>
           </div>
         </div>
